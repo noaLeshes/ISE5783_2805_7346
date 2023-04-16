@@ -5,7 +5,8 @@ public class plane
 	private Point point;
 	private Vector normal; 
 	// ***************** Constructors ********************** //
-    plane()
+   
+	plane()
     {
     	super();
     	point=new Point(0,0,0);
