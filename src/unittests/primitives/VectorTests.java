@@ -17,29 +17,40 @@ import primitives.Util;
  * @author USER
  *
  */
-class VectorTests {
+class VectorTests 
+{
 
 	/**
 	 * Test method for {@link primitives.Vector#add(primitives.Vector)}.
 	 */
 	@Test
-	void testAddVector() {
-		// =============== Boundary Values Tests ==================
-		// TC01: Test that Checking the connection of zero vector vectors
+	void testAddVector()
+	{
+        //============ Equivalence Partitions Tests ==============//
+        //TC: Test that vector addition is proper. We should get a new vector from the two vectors.
 		Vector v1 = new Vector(1, 2, 3);
 		Vector v2 = new Vector(1, 2, 4);
 		Vector v3 = new Vector(2, 4, 7);
 		assertTrue((v1.add(v2).equals(v3)), "ERROR: Vector + Vector does not work correctly");
+	     //============ Boundary Partitions Tests ==============//
+        //TC: Test that addition of a vector by its opposite throws an error
+        assertThrows(IllegalArgumentException.class, () -> v1.add(v1.scale(-1)),"Add fails to throw an exception for opposite vectors");
 	}
 
 	/**
 	 * Test method for {@link primitives.Vector#scale(double)}.
 	 */
 	@Test
-	void testScale() {
+	void testScale() 
+	{
+        //============ Equivalence Partitions Tests ==============//
+        //TC: Test that vector scalar multiplication is proper. We should get a new vector multiplied by the double parameter.
 		Vector v1 = new Vector(1, 2, 3);
 		Vector v2 = new Vector(2, 4, 6);
 		assertTrue((v1.scale(2).equals(v2)), "ERROR: Vector * scalar does not work correctly");
+		//============ Boundary Tests ==============//
+        //TC: Test that checks that scalar multiplication by zero throws an error
+        assertThrows(IllegalArgumentException.class, () -> v1.scale(0),"Scale fails to throw an exception for multiplying by 0");
 
 	}
 
@@ -47,7 +58,8 @@ class VectorTests {
 	 * Test method for {@link primitives.Vector#dotProduct(primitives.Vector)}.
 	 */
 	@Test
-	void testDotProduct() {
+	void testDotProduct() 
+	{
 		Vector v1 = new Vector(1, 2, 3);
 		Vector v2 = new Vector(-2, -4, -6);
 		Vector v3 = new Vector(0, 3, -2);
@@ -63,7 +75,8 @@ class VectorTests {
 	 * Test method for {@link primitives.Vector#crossProduct(primitives.Vector)}.
 	 */
 	@Test
-	void testCrossProduct() {
+	void testCrossProduct() 
+	{
 		Vector v1 = new Vector(1, 2, 3);
 		// ============ Equivalence Partitions Tests ==============
 		Vector v2 = new Vector(0, 3, -2);
@@ -79,7 +92,8 @@ class VectorTests {
 	 * Test method for {@link primitives.Vector#lengthSquared()}.
 	 */
 	@Test
-	void testLengthSquared() {
+	void testLengthSquared()
+	{
 		// ============ Equivalence Partitions Tests ==============
 		// TC01: Checking the correctness of the vector length Squared
 		Vector v1 = new Vector(1, 2, 3);
@@ -90,7 +104,8 @@ class VectorTests {
 	 * Test method for {@link primitives.Vector#length()}.
 	 */
 	@Test
-	void testLength() {
+	void testLength() 
+	{
 		// ============ Equivalence Partitions Tests ==============
 		// TC01: Checking the correctness of the vector length
 		assertTrue(isZero(new Vector(0, 3, 4).length() - 5), "ERROR: length() wrong value");
@@ -100,7 +115,8 @@ class VectorTests {
 	 * Test method for {@link primitives.Vector#normalize()}.
 	 */
 	@Test
-	void testNormalize() {
+	void testNormalize()
+	{
 		Vector v = new Vector(0, 3, 4);
 		Vector n = v.normalize();
 		// ============ Equivalence Partitions Tests ==============

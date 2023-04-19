@@ -42,6 +42,7 @@ public class Sphere extends RadialGeometry
 	 * @param point - the point to get the normal vector at
 	 * @return null
 	 */
+	@Override
 	public Vector getNormal(Point point)
 	{
 		 Vector N = point.subtract(center);

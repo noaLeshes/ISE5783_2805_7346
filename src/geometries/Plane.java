@@ -46,7 +46,8 @@ public class Plane implements Geometry {
      * 
      * @return the point on the plane
      */
-    public Point getPoint() {
+    public Point getPoint()
+    {
 		return point;
 	}
     
