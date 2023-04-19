@@ -61,4 +61,20 @@ public class Ray
 	{
 		return "Ray [p0=" + p0 + ", dir=" + dir + "]";
 	}
+
+     /**
+	 * @return the p0 of the ray
+	 */
+	public Point getP0()
+	{
+		return p0;
+	}
+
+    /**
+	 * @return the dir of the ray
+	 */
+	public Vector getDir() 
+	{
+		return dir;
+	}
 }

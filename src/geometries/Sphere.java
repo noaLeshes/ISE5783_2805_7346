@@ -29,6 +29,12 @@ public class Sphere extends RadialGeometry
 	{
 		return center;
 	}
+	/**	  
+	 * @return the radius of the sphere
+	 */
+	public double getRadius() {
+		return radius;
+	}
 
 	/**
 	 * Returns the normal vector to the sphere at the specified point.
@@ -38,8 +44,7 @@ public class Sphere extends RadialGeometry
 	 */
 	public Vector getNormal(Point point)
 	{
-		/* Vector N = point.subtract(center);
-	     return N.normalize();*/
-		return null;
+		 Vector N = point.subtract(center);
+	     return N.normalize();
 	 }
 }

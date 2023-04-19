@@ -9,7 +9,7 @@ public class Tube extends RadialGeometry
 {
 
 	// The axis ray of the tube
-	Ray axisRay;
+	final Ray axisRay;
 
 	/**
 	 * Constructs a new tube with the specified radius and axis ray.
@@ -37,8 +37,21 @@ public class Tube extends RadialGeometry
 	 * @param p0 - the point to get the normal vector at
 	 * @return null
 	 */
-	public Vector getNormal(Point p0)
+	public Vector getNormal(Point point)
 	{
-		return null;
+		if(point.equals(axisRay.getP0()))
+		{
+			return axisRay.getDir();
+		}
+		
+		Point p = axisRay.getP0();
+		double d = axisRay.getDir().dotProduct(point.subtract(axisRay.getP0()));
+		
+		if(d != 0)
+		{
+			p = p.add(axisRay.getDir().scale(d));
+		}
+		
+		return point.subtract(p).normalize();
 	}
 }

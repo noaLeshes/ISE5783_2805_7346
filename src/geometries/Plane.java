@@ -5,10 +5,7 @@ import primitives.Vector;;
 
 public class Plane implements Geometry {
 	
-	// The point on the plane
 	final Point point;
-	
-	// The normal vector to the plane
 	final Vector normal; 
 	
 	/**
@@ -18,8 +15,8 @@ public class Plane implements Geometry {
 	 * @param p - the point on the plane
 	 * @param n - the normal vector to the plane
 	 */
-    Plane(Point p ,Vector n) {
-    	super();
+    Plane(Point p ,Vector n) 
+    {
     	point = p;
     	normal = n.normalize(); 			
    	}
@@ -31,9 +28,17 @@ public class Plane implements Geometry {
      * @param p2 - the second point
      * @param p3 - the third point
      */
-    public Plane(Point p1, Point p2, Point p3) {
-		normal = null;
+    public Plane(Point p1, Point p2, Point p3) 
+    {
+    try { // try for case the constructor get all point on the same vector or at least two point are the same
+
 		point = p1;
+        normal = p1.subtract(p2).crossProduct(p1.subtract(p3)).normalize();
+        } 
+    	catch (IllegalArgumentException e)
+    	{
+            throw new IllegalArgumentException("the points are on the same vector");
+        }
 	}
     
     /**
