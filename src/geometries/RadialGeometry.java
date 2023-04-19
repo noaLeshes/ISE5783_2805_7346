@@ -1,34 +1,42 @@
 package geometries;
 
-
 import primitives.Point;
 import primitives.Vector;
 
 
-public abstract class RadialGeometry implements Geometry
+public abstract class RadialGeometry implements Geometry 
 {
-	 protected double radius;
-	 
-	// ***************** Constructors ********************** //
 
-	 
-	 public RadialGeometry(double radius)
-	 {
-			this.radius = radius;
-	 }
+	// The radius of the radial geometry
+	protected double radius;
 
-	// ***************** Getters/Setters ********************** // 
+	/**
+	 * Constructs a new radial geometry with the specified radius.
+	 * 
+	 * @param radius - the radius of the radial geometry
+	 */
+	public RadialGeometry(double radius) 
+	{
+		this.radius = radius;
+	}
 
-	public double getRadius() 
+	/**
+	 * 
+	 * @return the radius of the radial geometry
+	 */
+	public double getRadius()
 	{
 		return radius;
 	}
 
-	// ***************** Funcs ********************** // 
-
+	/**
+	 * Returns the normal vector to the radial geometry at the specified point.
+	 * 
+	 * @param p - the point to get the normal vector at
+	 * @return null
+	 */
 	public Vector getNormal(Point p)
 	{
 		return null;
 	}
-
 }
