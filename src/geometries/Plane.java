@@ -1,9 +1,13 @@
 package geometries;
+import java.util.List;
+
 import primitives.Point;
-import primitives.Vector;;
+import primitives.Ray;
+import primitives.Vector;
 
-
-public class Plane implements Geometry {
+import static primitives.Util.*;
+public class Plane implements Geometry 
+{
 	
 	final Point point;
 	final Vector normal; 
@@ -70,5 +74,33 @@ public class Plane implements Geometry {
 	public Vector getNormal(Point point) 
 	{
 		return normal;
-	}   
+	} 
+	
+	@Override
+	public List<Point> findIntsersections(Ray ray)
+	{
+		double nv = normal.dotProduct(ray.getDir());
+		if (isZero(nv))
+		{
+			return null;
+		}
+		
+		try 
+		{
+			Vector pSubtractP0 = point.subtract(ray.getP0());
+			double t = alignZero((normal.dotProduct(pSubtractP0))/nv);
+
+			if(t <= 0)
+			{
+				return null;
+			}
+			return List.of(ray.getPoint(t));
+		}
+		catch(Exception ex) 
+		{
+			return null;
+		}  
+    
+	}
+ 
 }

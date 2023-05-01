@@ -105,4 +105,19 @@ public class Point
 	{
 		return "Point [coordinates=" + coordinates + "]";
 	}
+	
+	public double getX()
+	{	
+		return coordinates.d1;
+	}
+
+	public double getY()
+	{	
+		return coordinates.d2;
+	}
+	
+	public double getZ()
+	{	
+		return coordinates.d3;
+	}
 }
