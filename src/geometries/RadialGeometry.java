@@ -12,7 +12,6 @@ public abstract class RadialGeometry implements Geometry
 
 	/**
 	 * Constructs a new radial geometry with the specified radius.
-	 * 
 	 * @param radius - the radius of the radial geometry
 	 */
 	public RadialGeometry(double radius) 
@@ -21,7 +20,6 @@ public abstract class RadialGeometry implements Geometry
 	}
 
 	/**
-	 * 
 	 * @return the radius of the radial geometry
 	 */
 	public double getRadius()
@@ -31,7 +29,6 @@ public abstract class RadialGeometry implements Geometry
 
 	/**
 	 * Returns the normal vector to the radial geometry at the specified point.
-	 * 
 	 * @param p - the point to get the normal vector at
 	 * @return null
 	 */

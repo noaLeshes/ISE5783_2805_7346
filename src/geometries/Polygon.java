@@ -1,10 +1,13 @@
 package geometries;
 
-import static primitives.Util.isZero;
+import static primitives.Util.*;
 
 import java.util.List;
+import java.util.ArrayList;
+
 
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
 
 /** Polygon class represents two-dimensional polygon in 3D Cartesian coordinate
@@ -79,4 +82,52 @@ public class Polygon implements Geometry {
 
    @Override
    public Vector getNormal(Point point) { return plane.getNormal(); }
+   
+   
+	/**	  
+	 * @return a list of the intersection points with the polygon 
+	 * @param ray - the ray that intersects with the polygon
+	 */
+   public List<Point> findIntsersections(Ray ray)
+	{
+		List<Point> rayPoints = plane.findIntsersections(ray);
+		if (rayPoints == null)
+		{
+			return null;
+		}
+		//check if the point in out or on the triangle:
+		List<Vector> normalsList = new ArrayList<Vector>();
+		Vector vI;
+		Vector vIplus1; 
+		for (int i = 0; i<= vertices.size()-1; i++)
+		{
+			vI = vertices.get(i).subtract(ray.getP0());
+			vIplus1 = vertices.get(i+1).subtract(ray.getP0());
+			normalsList.add((vI.crossProduct(vIplus1).normalize()));
+		}
+		//the last:
+		vI = vertices.get(vertices.size()).subtract(ray.getP0());
+		vIplus1 = vertices.get(0).subtract(ray.getP0());
+		normalsList.add((vI.crossProduct(vIplus1).normalize()));
+		
+		//The point is inside if all 𝒗 ∙ 𝑵𝒊 have the same sign (+/-)
+		int countPositive = 0;
+		int countNegative = normalsList.size();
+		for (Vector vector : normalsList) 
+		{
+			if (alignZero((ray.getDir()).dotProduct(vector)) > 0)
+			{
+				countPositive++;
+			}
+			else if (alignZero((ray.getDir()).dotProduct(vector)) <= 0)
+			{
+				countNegative--;
+			}
+		}
+		if (countPositive != normalsList.size() /*all the normals are in the positive side*/ && countNegative != 0 /*all the normals are in the negative side*/)
+		{
+			return null; //there is no intersection point
+		}
+		return rayPoints;
+	}
 }

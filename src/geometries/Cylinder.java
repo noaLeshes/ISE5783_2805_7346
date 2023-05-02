@@ -1,5 +1,7 @@
 package geometries;
 
+import java.util.List;
+
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
@@ -25,7 +27,6 @@ public class Cylinder extends Tube
 
     /**
      * Returns the normal vector to the cylinder at a given point.
-     *
      * @param p0 The point on the cylinder's surface.
      * @return null.
      */
@@ -39,13 +40,27 @@ public class Cylinder extends Tube
 
 	        //if the point is at the top of the cylinder
 	        if (point.equals(pTop) || Util.isZero(dir.dotProduct(point.subtract(pTop))))
+	        {
 	            return dir;
+	        }
 
 	        //if the point is at the base of the cylinder
 	        if (point.equals(p0) || Util.isZero(dir.dotProduct(point.subtract(p0))))
+	        {
 	            return dir.scale(-1);
+	        }
 
 	        return super.getNormal(point);
 	    }
+	 
+	     /**	  
+		 * @return a list of the intersection points with the Cylinder 
+		 * @param ray - the ray that intersects with the Cylinder
+		 */
+		@Override
+		public List<Point> findIntsersections(Ray ray)
+		{
+		   return null;
+		}
+	}
 
-}

@@ -15,7 +15,6 @@ public class Sphere extends RadialGeometry
 
 	/**
 	 * Constructs a new sphere with the specified radius and center point.
-	 * 
 	 * @param radius1 - the radius of the sphere
 	 * @param p - the center point of the sphere
 	 */
@@ -32,18 +31,18 @@ public class Sphere extends RadialGeometry
 	{
 		return center;
 	}
+	
 	/**	  
 	 * @return the radius of the sphere
 	 */
-	public double getRadius() {
+	public double getRadius() 
+	{
 		return radius;
 	}
 
 	/**
 	 * Returns the normal vector to the sphere at the specified point.
-	 * 
 	 * @param point - the point to get the normal vector at
-	 * @return null
 	 */
 	@Override
 	public Vector getNormal(Point point)
@@ -52,35 +51,44 @@ public class Sphere extends RadialGeometry
 	     return N.normalize();
 	 }
 	
+	/**	  
+	 * @return a list of the intersection points with the sphere 
+	 * @param ray - the ray that intersects with the sphere
+	 */
 	@Override
 	public List<Point> findIntsersections(Ray ray)
 	{
-		if (ray.getP0().equals(center)) // if the begin of the ray in the center, the point, is on the radius
+		if (ray.getP0().equals(center)) // if the start point of the ray in the center, the point, is on the radius
+		{
 			return List.of(ray.getPoint(radius));
+		}
 		Vector u = center.subtract(ray.getP0());
 		double tM = alignZero(ray.getDir().dotProduct(u));
 		double d = alignZero(Math.sqrt(u.length()*u.length()- tM * tM));
 		double tH = alignZero(Math.sqrt(radius*radius - d*d));
 		double t1 = alignZero(tM+tH);
 		double t2 = alignZero(tM-tH);
-		
-		
 		if (d > radius)
-			return null; // there are no instructions
-
-		
+		{
+			return null; // there are no intersections
+		}
 		if (t1 <=0 && t2<=0)
+		{
 			return null;
-		
+		}
 		if (t1 > 0 && t2 >0)
-			return List.of(ray.getPoint(t1),ray.getPoint(t2));
+		{
+			return List.of(ray.getPoint(t1),ray.getPoint(t2));// returns the list
+		}
+		
 		if (t1 > 0)
 		{
-			return List.of(ray.getPoint(t1));
+			return List.of(ray.getPoint(t1));// returns the list
 		}
-
 		else
-			return List.of(ray.getPoint(t2));
+		{
+			return List.of(ray.getPoint(t2));// returns the list
+		}
 
 	}
 }

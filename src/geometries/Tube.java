@@ -1,5 +1,7 @@
 package geometries;
 
+import java.util.List;
+
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
@@ -54,4 +56,14 @@ public class Tube extends RadialGeometry
 		
 		return point.subtract(p).normalize();
 	}
-}
+	
+	   /**	  
+	   * @return a list of the intersection points with the Cylinder 
+   	   * @param ray - the ray that intersects with the Cylinder
+  	   */
+	    @Override
+		public List<Point> findIntsersections(Ray ray)
+		{
+		   return null;
+		}
+	}

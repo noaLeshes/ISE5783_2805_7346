@@ -1,6 +1,7 @@
 package geometries;
 import java.util.LinkedList ;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import primitives.Point;
@@ -9,29 +10,26 @@ import primitives.Ray;
 
 public class Geometries implements Intersectable
 {
-	List<Intersectable> l;
+	private List<Intersectable> l;
+	
 	public Geometries()
 	{
-		//we chose in LinkedList  because this class works better than linked list when the application demands storing the data and accessing it.
 		l = new LinkedList <Intersectable>();
 	}
-
 	/**
-	 * Constructor that recives list of geomeries and put them in new LinkedList 
-	 * 
-	 * @author sarit silverstone and rivki adler
+	 * Constructor that recives list of geomeries and puts them in new LinkedList 
+	 * @author Miri Ordentlich and Noa Leshes
 	 * @param geometries
 	 * */
-
 	public Geometries(Intersectable... geometries)
 	{
-		l =  new LinkedList <Intersectable>(Arrays.asList(geometries));
+		l = new LinkedList <Intersectable>();
+		Collections.addAll(l, geometries);
 	}
 	
 	/**
 	 * A function that add the geometries the receive to the list.
-	 * 
-	 * @author sarit silverstone and rivki adler
+	 * @author Miri Ordentlich and Noa Leshes
 	 * @param geometries 
 	 * */
 
@@ -39,10 +37,14 @@ public class Geometries implements Intersectable
 	{
 		if (geometries != null)
 		{
-			l.addAll(Arrays.asList(geometries));
+			Collections.addAll(l,geometries);
 		}
 	}
 	
+	/**	  
+	* @return a list of the intersection points 
+	* @param ray - the ray that intersects with the object		
+    */
 	@Override
 	public List<Point> findIntsersections(Ray ray) 
 	{
@@ -51,13 +53,14 @@ public class Geometries implements Intersectable
 		{
 			List<Point> intersection = intersectable.findIntsersections(ray);
 			if (intersection != null)
+			{
 				temp.addAll(intersection); 
+			}
 		}
-		
 		if (temp.isEmpty())
+		{
 			return null;
-		return temp;
-		
-		
+		}
+		return temp;	
 	}
 }
