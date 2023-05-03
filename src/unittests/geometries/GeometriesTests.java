@@ -29,6 +29,8 @@ class GeometriesTests
 			Sphere sphere = new Sphere(1, new Point(1, 0, 0));
 			Triangle triangle = new Triangle(new Point(-4, 0, 0), new Point(0, 0, 5), new Point(0, -5, 0));
 			Plane plane = new Plane(new Point(0, 0, 1), new Point(1, 0, 0), new Point(4, 0, 2));
+			collection.add(sphere, triangle, plane);
+
 			
 			// ============ Equivalence Partitions Tests ================
 
@@ -45,7 +47,6 @@ class GeometriesTests
 					collection.findIntsersections(new Ray(new Point(0, -8, 0), new Vector(-10, -1, 0))));
 
 			// TC03: No cut shape 
-			collection.add(sphere, triangle, plane/* , tube ,cylinder */);
 			assertNull("No cut shape must return 0",
 					collection.findIntsersections(new Ray(new Point(0, -8, 0), new Vector(-10, -1, 0))));
 
