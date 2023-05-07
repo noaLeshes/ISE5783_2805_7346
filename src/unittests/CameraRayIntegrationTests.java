@@ -150,6 +150,7 @@ class CameraRaysIntegrationTests {
 		catch (Exception e) 
 		{
 		
+			
 			e.printStackTrace();
 			fail("dont need throws exception");
 		}
