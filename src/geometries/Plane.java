@@ -18,7 +18,7 @@ public class Plane implements Geometry
 	 * @param p - the point on the plane
 	 * @param n - the normal vector to the plane
 	 */
-    Plane(Point p ,Vector n) 
+    public Plane(Point p ,Vector n) 
     {
     	point = p;
     	normal = n.normalize(); 			
