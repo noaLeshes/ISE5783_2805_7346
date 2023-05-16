@@ -7,6 +7,10 @@ import static primitives.Util.isZero;
 
 import java.util.MissingResourceException;
 
+/**
+ * @author 	Noa leshes and Miri Ordentlich
+ */
+
 public class Camera
 {
 	private Point locationPoint;// The location of the camera in 3D space
@@ -40,29 +44,6 @@ public class Camera
 		 Color color = rayTracerBase.traceRay(ray);
 		 return color;
 	 }
-	/**
-	 * Sets the size of the view plane.
-	 * @param width The width of the view plane.
-	 * @param height The height of the view plane.
-	 * @return This Camera object.
-	 */
-	public Camera setVPSize(double width, double height)
-	{
-		this.width = width;
-		this.height = height;
-		return this;
-	}
-	
-	/**
-	 * Sets the distance of the view plane from the camera.
-	 * @param distance The distance of the view plane from the camera.
-	 * @return This Camera object.
-	 */
-	public Camera setVPDistance(double distance)
-	{
-		this.distance = distance;
-		return this;
-	}
 	
 	/**
 	 * Constructs a Ray that passes through the given pixel.
@@ -108,39 +89,74 @@ public class Camera
 		return new Ray(locationPoint, pixelVector);
 	}
 	
+	/**
+	 * Renders the image by casting rays through each pixel and calculating the resulting colors
+	 * It iterates over each pixel in the image and casts a ray through it to determine the color of that pixel
+	 * The resulting color is calculated using the configured RayTracerBase object
+	 * @throws MissingResourceException If any required resources (e.g., imageWriter, rayTracerBase, etc.) are missing
+	 */
 	public void renderImage() throws MissingResourceException
 	{
        try 
        {
+    	   
+        // Check if all the required resources are available
+
 		if (imageWriter == null)
+		{
 			throw new MissingResourceException("this function must have values in all the fileds", "ImageWriter", "imageWriter");
-	    if (rayTracerBase == null)
+		}
+		
+		if (rayTracerBase == null)
+		{
 	     	throw new MissingResourceException("this function must have values in all the fileds", "RayTracerBase", "rayTracerBase");
-		if (locationPoint == null) 
+		}
+		
+	    if (locationPoint == null) 
+	    {
 	     	throw new MissingResourceException("this function must have values in all the fileds", "Point", "locationPoint");
+	    }
+	    
 		if (v_up == null) 
+		{
 	     	throw new MissingResourceException("this function must have values in all the fileds", "Vector", "v_up");
+		}
+		
 		if (v_to == null) 
+		{
 	     	throw new MissingResourceException("this function must have values in all the fileds", "Vector", "v_to");
+		}
+		
 		if (v_right == null) 
+		{
 	     	throw new MissingResourceException("this function must have values in all the fileds", "Vector", "v_right");
+		}
+		
 		if (height == 0) 
+		{
 	     	throw new MissingResourceException("this function must have values in all the fileds", "Double", "height");
+		}
+		
 		if (width == 0) 
+		{
 	     	throw new MissingResourceException("this function must have values in all the fileds", "Double", "width");
+		}
+		
 		if (distance == 0) 
+		{
 	     	throw new MissingResourceException("this function must have values in all the fileds", "Double", "distance");
+		}
 
         int nX = imageWriter.getNx();
         int nY = imageWriter.getNy();
-        
-	    for (int i= 0; i< nX; i++)
+	    for (int i= 0; i< nX; i++)// Iterate over each pixel in the image
 		{
 			for (int j = 0; j < nY; j++)	
 			{
+				// Cast a ray through the current pixel
+                // and calculate the resulting color using the configured RayTracerBase object
 				imageWriter.writePixel(j, i, castRay(nX,nY,j,i));
-		   }
-			
+		    }
 	     }
        }
 	   catch(MissingResourceException e)
@@ -149,6 +165,13 @@ public class Camera
        }
 	}
 
+	/**
+	 * Prints a grid pattern on the image by setting specific pixels to the specified color at regular intervals
+	 * The grid pattern is created by setting pixels at horizontal and vertical intervals to the specified color
+	 * @param color    The color to be set for the grid pixels
+	 * @param interval The interval at which the grid pixels are set
+	 * @throws MissingResourceException If the ImageWriter is missing
+	 */
 	public void printGrid(Color color ,int interval)
 	{
 		if (imageWriter == null)
@@ -158,7 +181,7 @@ public class Camera
 		{
 			for (int j = 0; j < imageWriter.getNy(); j++)	
 			{
-				if(i % interval == 0 || j % interval == 0)
+				if(i % interval == 0 || j % interval == 0)// Set the color for pixels at regular intervals to create a grid pattern
 				{
 				    imageWriter.writePixel(i, j, color);
 				}
@@ -166,15 +189,22 @@ public class Camera
 		}
 	}
 	
+	/**
+	 * Writes the rendered image to the output file specified in the ImageWriter.
+	 * The image is written to the file using the format specified by the ImageWriter.
+	 * @throws MissingResourceException If the ImageWriter is missing.
+	 */
 	public void writeToImage()
 	{
 		if (imageWriter == null)
+		{
 			throw new MissingResourceException("this function must have values in all the fileds", "ImageWriter", "i");
+		}
 		imageWriter.writeToImage();
 	}
+	
 	/**
 	 * Getter for locationPoint
-	 * @author Noa Leshes & Miri Ordentlich
 	 * @return Point value for locationPoint	 
 	 */
 	public Point getlocationPoint() 
@@ -183,7 +213,6 @@ public class Camera
 	}
 	/**
 	 * Getter for v_up
-	 * @author Noa Leshes & Miri Ordentlich
 	 * @return Vector value for vUp	 
 	 */
 	public Vector getv_up() 
@@ -193,7 +222,6 @@ public class Camera
 
 	/**
 	 * Getter for v_to
-	 * @author Noa Leshes & Miri Ordentlich
 	 * @return Vector value for vTo	 
 	 */
 	public Vector getv_to() 
@@ -203,7 +231,6 @@ public class Camera
 	
 	/**
 	 * Getter for v_right
-	 * @author Noa Leshes & Miri Ordentlich
 	 * @return Vector value for vRight	 
 	 */
 	public Vector getv_right() 
@@ -213,7 +240,6 @@ public class Camera
 
 	/**
 	 * Getter for width
-	 * @author Noa Leshes & Miri Ordentlich
 	 * @return double value for width	 
 	 */
 	public double getWidth() 
@@ -223,7 +249,6 @@ public class Camera
 
 	/**
 	 * Getter for height
-	 * @author Noa Leshes & Miri Ordentlich
 	 * @return double value for height	 
 	 */
 	public double getHeight() 
@@ -233,7 +258,6 @@ public class Camera
 
 	/**
 	 * Getter for distance
-	 * @author Noa Leshes & Miri Ordentlich
 	 * @return double value for distance	 
 	 */
 	public double getDistance() 
@@ -241,12 +265,46 @@ public class Camera
 		return distance;
 	}
 	
+	/**
+	 * Sets the size of the view plane.
+	 * @param width The width of the view plane.
+	 * @param height The height of the view plane.
+	 * @return This Camera object.
+	 */
+	public Camera setVPSize(double width, double height)
+	{
+		this.width = width;
+		this.height = height;
+		return this;
+	}
+	
+	/**
+	 * Sets the distance of the view plane from the camera.
+	 * @param distance The distance of the view plane from the camera.
+	 * @return This Camera object.
+	 */
+	public Camera setVPDistance(double distance)
+	{
+		this.distance = distance;
+		return this;
+	}
+	
+	/**
+	 * Sets the ImageWriter object for writing the rendered image.
+	 * @param imageWriter The ImageWriter object to be set.
+	 * @return This Camera object.
+	 */
 	public Camera setImageWriter(ImageWriter imageWriter) 
 	{
 		this.imageWriter = imageWriter;
 		return this;
 	}
 
+	/**
+	 * Sets the RayTracerBase object for tracing rays in the scene.
+	 * @param rayTracerBase The RayTracerBase object to be set.
+	 * @return This Camera object.
+	 */
 	public Camera setRayTracerBase(RayTracerBase rayTracerBase) 
 	{
 		this.rayTracerBase = rayTracerBase;
