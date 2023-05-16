@@ -28,7 +28,7 @@ public class Geometries implements Intersectable
 	}
 	
 	/**
-	 * A function that add the geometries the receive to the list.
+	 * A function that adds the geometries we receive to the list.
 	 * @author Miri Ordentlich and Noa Leshes
 	 * @param geometries 
 	 * */
@@ -48,18 +48,18 @@ public class Geometries implements Intersectable
 	@Override
 	public List<Point> findIntsersections(Ray ray) 
 	{
-	   List<Point> temp = new LinkedList <Point>();
+	   List<Point> temp = null;
 		for ( Intersectable intersectable : l) 
 		{
 			List<Point> intersection = intersectable.findIntsersections(ray);
 			if (intersection != null)
 			{
+				if(temp == null)
+				{
+					temp = new LinkedList <>();
+				}
 				temp.addAll(intersection); 
 			}
-		}
-		if (temp.isEmpty())
-		{
-			return null;
 		}
 		return temp;	
 	}
