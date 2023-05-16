@@ -10,6 +10,8 @@ public class Point
 	 * The coordinates of the point.
 	 */
 	final Double3 coordinates;
+	public static final Point ZERO= new Point(0,0,0);
+
 	
 	/**
 	 * Constructs a new point with the given coordinates.
