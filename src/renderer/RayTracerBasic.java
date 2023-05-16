@@ -19,6 +19,10 @@ public class RayTracerBasic extends RayTracerBase
 		super(scene);
 	}
 	
+	private Color calcColor(Point point)
+	{
+		return scene.ambientLight.getIntensity();
+	}
 	 /**
      * Traces a ray in the scene and calculates the color at the intersection point.
      * This basic implementation finds the closest intersection point of the ray with the scene's geometries.
@@ -32,7 +36,7 @@ public class RayTracerBasic extends RayTracerBase
 	public primitives.Color traceRay(Ray ray) throws IllegalArgumentException 
 	{
 		Point closestPoint = ray.findClosestPoint(scene.geometries.findIntsersections(ray));
-		return closestPoint == null ? scene.backgroundColor : scene.ambientLight.getIntensity();
+		return closestPoint == null ? scene.backgroundColor : calcColor(closestPoint);
 		
 	}
 }

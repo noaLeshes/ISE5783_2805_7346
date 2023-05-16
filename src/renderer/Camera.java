@@ -1,14 +1,19 @@
 package renderer;
+import primitives.Color;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 import static primitives.Util.isZero;
+
+import java.util.MissingResourceException;
 
 public class Camera
 {
 	private Point locationPoint;// The location of the camera in 3D space
 	private Vector v_to, v_up, v_right;// The orientation vectors of the camera
 	private double height, width, distance;// The size and distance of the view plane
+	private ImageWriter imageWriter;
+	private RayTracerBase rayTracerBase;
 	
 	/**
 	 * Constructs a new Camera object with the given location and orientation vectors.
@@ -29,6 +34,12 @@ public class Camera
 		this.locationPoint = locationPoint;	
 	}
 	
+	 private Color castRay(int nX,int nY,int j,int i)
+	 {
+		 Ray ray = constructRay(nX, nY, j, i);
+		 Color color = rayTracerBase.traceRay(ray);
+		 return color;
+	 }
 	/**
 	 * Sets the size of the view plane.
 	 * @param width The width of the view plane.
@@ -97,6 +108,70 @@ public class Camera
 		return new Ray(locationPoint, pixelVector);
 	}
 	
+	public void renderImage() throws MissingResourceException
+	{
+       try 
+       {
+		if (imageWriter == null)
+			throw new MissingResourceException("this function must have values in all the fileds", "ImageWriter", "imageWriter");
+	    if (rayTracerBase == null)
+	     	throw new MissingResourceException("this function must have values in all the fileds", "RayTracerBase", "rayTracerBase");
+		if (locationPoint == null) 
+	     	throw new MissingResourceException("this function must have values in all the fileds", "Point", "locationPoint");
+		if (v_up == null) 
+	     	throw new MissingResourceException("this function must have values in all the fileds", "Vector", "v_up");
+		if (v_to == null) 
+	     	throw new MissingResourceException("this function must have values in all the fileds", "Vector", "v_to");
+		if (v_right == null) 
+	     	throw new MissingResourceException("this function must have values in all the fileds", "Vector", "v_right");
+		if (height == 0) 
+	     	throw new MissingResourceException("this function must have values in all the fileds", "Double", "height");
+		if (width == 0) 
+	     	throw new MissingResourceException("this function must have values in all the fileds", "Double", "width");
+		if (distance == 0) 
+	     	throw new MissingResourceException("this function must have values in all the fileds", "Double", "distance");
+
+        int nX = imageWriter.getNx();
+        int nY = imageWriter.getNy();
+        
+	    for (int i= 0; i< nX; i++)
+		{
+			for (int j = 0; j < nY; j++)	
+			{
+				imageWriter.writePixel(j, i, castRay(nX,nY,j,i));
+		   }
+			
+	     }
+       }
+	   catch(MissingResourceException e)
+       {
+	    	throw new MissingResourceException("No implemented yet",e.getClassName(),e.getKey());
+       }
+	}
+
+	public void printGrid(Color color ,int interval)
+	{
+		if (imageWriter == null)
+			throw new MissingResourceException("this function must have values in all the fileds", "ImageWriter", "i");
+		
+		for (int i = 0; i < imageWriter.getNx(); i++)
+		{
+			for (int j = 0; j < imageWriter.getNy(); j++)	
+			{
+				if(i % interval == 0 || j % interval == 0)
+				{
+				    imageWriter.writePixel(i, j, color);
+				}
+			}
+		}
+	}
+	
+	public void writeToImage()
+	{
+		if (imageWriter == null)
+			throw new MissingResourceException("this function must have values in all the fileds", "ImageWriter", "i");
+		imageWriter.writeToImage();
+	}
 	/**
 	 * Getter for locationPoint
 	 * @author Noa Leshes & Miri Ordentlich
@@ -106,7 +181,6 @@ public class Camera
 	{
 		return locationPoint;
 	}
-
 	/**
 	 * Getter for v_up
 	 * @author Noa Leshes & Miri Ordentlich
@@ -165,5 +239,17 @@ public class Camera
 	public double getDistance() 
 	{
 		return distance;
+	}
+	
+	public Camera setImageWriter(ImageWriter imageWriter) 
+	{
+		this.imageWriter = imageWriter;
+		return this;
+	}
+
+	public Camera setRayTracerBase(RayTracerBase rayTracerBase) 
+	{
+		this.rayTracerBase = rayTracerBase;
+		return this;
 	}
 }

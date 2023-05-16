@@ -38,10 +38,10 @@ public class RenderTests
          .setVPDistance(100) //
          .setVPSize(500, 500) //
          .setImageWriter(new ImageWriter("base render test", 1000, 1000))
-         .setRayTracer(new RayTracerBasic(scene));
+         .setRayTracerBase(new RayTracerBasic(scene));
 
       camera.renderImage();
-      camera.printGrid(100, new Color(YELLOW));
+      camera.printGrid(new Color(YELLOW),100);
       camera.writeToImage();
    }
 
@@ -93,9 +93,9 @@ public class RenderTests
       Camera camera = new Camera(Point.ZERO, new Vector(0, 0, -1), new Vector(0, 1, 0))     //
          .setVPDistance(100)                                                                //
          .setVPSize(500, 500).setImageWriter(new ImageWriter("xml render test", 1000, 1000))
-         .setRayTracer(new RayTracerBasic(scene));
+         .setRayTracerBase(new RayTracerBasic(scene));
       camera.renderImage();
-      camera.printGrid(100, new Color(YELLOW));
+      camera.printGrid(new Color(YELLOW),100);
       camera.writeToImage();
    }
 }
