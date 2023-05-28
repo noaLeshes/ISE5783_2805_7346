@@ -110,29 +110,29 @@ public class PolygonTests
 	   
 	       //The ray begins "before" the plane
 	       // TC01: The ray cuts the plane inside the polygon (1 points)
-	       assertEquals("The intersection point is in the Polygon - need 1 intersections", 1, myPolygon.findIntsersections(ray).size());
+	       assertEquals("The intersection point is in the Polygon - need 1 intersections", 1, myPolygon.findIntersections(ray).size());
 	       
 	       // TC02: The ray cuts the plane outside of the polygon opposite to one of the polygon's sides (0 points)
 	       ray = new Ray(new Point(6.94, -2.39, 0), new Vector(-2.68, 5.72, 0));
-	       assertNull("The intersection point is out of the Polygon - need 0 intersections", myPolygon.findIntsersections(ray));
+	       assertNull("The intersection point is out of the Polygon - need 0 intersections", myPolygon.findIntersections(ray));
 
 	        // TC03: The ray cuts the plane outside of the polygon opposite to one of the polygon's vertices (0 points)
 	       ray = new Ray(new Point(-0.93, 6.2, 0), new Vector(2.54, 2.23, 0));
-	       assertNull("The intersection point is out of the Polygon - need 0 intersections", myPolygon.findIntsersections(ray));
+	       assertNull("The intersection point is out of the Polygon - need 0 intersections", myPolygon.findIntersections(ray));
 
 	       // =============== Boundary Values Tests ==================
 
 		   // TC04: The ray intersects the plane on one of the polygon's sides (0 points)
 	       ray = new Ray(new Point(4.26, -1.28, 2.14), new Vector(-0.15, 3.07, -2.14));
-	       assertNull("On the side - need 0 intersections", myPolygon.findIntsersections(ray));
+	       assertNull("On the side - need 0 intersections", myPolygon.findIntersections(ray));
 	       
 		   // TC05: The ray intersects the plane on one of the polygon's vertices (0 points)
 	       ray = new Ray(new Point(3.7, -0.71, 1.44), new Vector(1.3, 0.71, -1.44));
-	       assertNull("On the vertex - need 0 intersections", myPolygon.findIntsersections(ray));
+	       assertNull("On the vertex - need 0 intersections", myPolygon.findIntersections(ray));
 	       
 		   // TC06: The ray intersects the plane on the line that continues one of the sides of the polygon (0 points)
 	       ray = new Ray(new Point(3.86, -4.95, 0), new Vector(2.97, 1.28, 0));
-	       assertNull("The intersection point is out of the Polygon - need 0 intersections", myPolygon.findIntsersections(ray));
+	       assertNull("The intersection point is out of the Polygon - need 0 intersections", myPolygon.findIntersections(ray));
 	       }
 	       catch(Exception ex)
 	       {

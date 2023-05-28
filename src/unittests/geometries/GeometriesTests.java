@@ -37,32 +37,32 @@ class GeometriesTests
 			// TC01: Some (but not all) shapes are cut 
 			// triangle and plane cut
 			assertEquals("wrong number of intersactions", 2,
-					collection.findIntsersections(new Ray(new Point(-4, -3, 2), new Vector(9, 5, -1))).size());
+					collection.findIntersections(new Ray(new Point(-4, -3, 2), new Vector(9, 5, -1))).size());
 			
 			// =============== Boundary Values Tests ==================
 
 			// TC02: Empty body collection 
 			assertEquals("An empty body collection must return null",
-					new Geometries().findIntsersections(new Ray(new Point(0, -8, 0), new Vector(-10, -1, 0))),
-					collection.findIntsersections(new Ray(new Point(0, -8, 0), new Vector(-10, -1, 0))));
+					new Geometries().findIntersections(new Ray(new Point(0, -8, 0), new Vector(-10, -1, 0))),
+					collection.findIntersections(new Ray(new Point(0, -8, 0), new Vector(-10, -1, 0))));
 
 			// TC03: No cut shape 
 			assertNull("No cut shape must return 0",
-					collection.findIntsersections(new Ray(new Point(0, -8, 0), new Vector(-10, -1, 0))));
+					collection.findIntersections(new Ray(new Point(0, -8, 0), new Vector(-10, -1, 0))));
 
 			// TC04: Some (but not all) shapes are cut 
 			// triangle and plane cut
 			assertEquals("wrong number of intersactions", 2,
-					collection.findIntsersections(new Ray(new Point(-4, -3, 2), new Vector(9, 5, -1))).size());
+					collection.findIntersections(new Ray(new Point(-4, -3, 2), new Vector(9, 5, -1))).size());
 
 			// TC05: Only one shape is cut 
 			// the plane cut
 			assertEquals("wrong number of intersactions", 1,
-					collection.findIntsersections(new Ray(new Point(-0.8, -3, 1), new Vector(3.4, 3, 1.57))).size());
+					collection.findIntersections(new Ray(new Point(-0.8, -3, 1), new Vector(3.4, 3, 1.57))).size());
 
 			// TC06: All shapes are cut
 			assertEquals("wrong number of intersactions", 4,
-					collection.findIntsersections(new Ray(new Point(-4, -3, 0), new Vector(6, 3, 0.5))).size());
+					collection.findIntersections(new Ray(new Point(-4, -3, 0), new Vector(6, 3, 0.5))).size());
 		}
 		
 		catch (Exception e) 

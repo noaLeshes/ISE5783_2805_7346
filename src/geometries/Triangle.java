@@ -1,6 +1,8 @@
 package geometries;
 
 import java.util.List;
+
+import geometries.Intersectable.GeoPoint;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
@@ -26,15 +28,18 @@ public class Triangle extends Polygon
 	 * @return a list of the intersection points with the triangle 
 	 * @param ray - the ray that intersects with the triangle
 	 */
-	public List<Point> findIntsersections(Ray ray)
+	@Override
+	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray)
 	{
-		List<Point> rayPoints = plane.findIntsersections(ray);
+		
+		List<GeoPoint> rayPoints = plane.findGeoIntersections(ray);
 		if (rayPoints == null)
 		{
 			return null;
 		}
-			
-
+		rayPoints.get(0).geometry = this;
+		
+	
 		//check if the points are in, out or on the triangle:
 		Vector v1 = vertices.get(0).subtract(ray.getP0());
 		Vector v2 = vertices.get(1).subtract(ray.getP0());

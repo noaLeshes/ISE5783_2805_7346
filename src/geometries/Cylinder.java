@@ -2,6 +2,7 @@ package geometries;
 
 import java.util.List;
 
+import geometries.Intersectable.GeoPoint;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
@@ -58,7 +59,7 @@ public class Cylinder extends Tube
 		 * @param ray - the ray that intersects with the Cylinder
 		 */
 		@Override
-		public List<Point> findIntsersections(Ray ray)
+		   protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray)
 		{
 		   return null;
 		}

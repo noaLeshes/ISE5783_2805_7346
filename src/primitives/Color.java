@@ -57,16 +57,16 @@ public class Color {
     * @param  colors one or more other colors to add
     * @return        new Color object which is a result of the operation */
    public Color add(Color... colors) {
-      double rr = rgb.d1;
-      double rg = rgb.d2;
-      double rb = rgb.d3;
-      for (Color c : colors) {
-         rr += c.rgb.d1;
-         rg += c.rgb.d2;
-         rb += c.rgb.d3;
-      }
-      return new Color(rr, rg, rb);
-   }
+		double rr = rgb.d1;
+		double rg = rgb.d2;
+		double rb = rgb.d3;
+		for (Color c : colors) {
+			rr += c.rgb.d1;
+			rg += c.rgb.d2;
+			rb += c.rgb.d3;
+		}
+		return new Color(rr, rg, rb);
+	}
 
    /** Scale the color by a scalar triad per rgb
     * @param  k scale factor per rgb

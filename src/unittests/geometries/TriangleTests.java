@@ -59,27 +59,27 @@ class TriangleTests
 			// ============ Equivalence Partitions Tests ====================
 
 	        // TC01: The ray cuts the plane inside the triangle (1 points)
-			assertEquals("the intersection point is in the triangle - need 1 intersections", 1,	triangle.findIntsersections(ray2).size());
+			assertEquals("the intersection point is in the triangle - need 1 intersections", 1,	triangle.findIntersections(ray2).size());
 						
 	        // TC02: The ray cuts the plane outside of the triangle opposite to one of the triangle's sides (0 points)
-			assertNull("the intersection point is out of the triangle - need 0 intersections", triangle.findIntsersections(ray));
+			assertNull("the intersection point is out of the triangle - need 0 intersections", triangle.findIntersections(ray));
 
 	        // TC03: The ray cuts the plane outside of the triangle opposite to one of the triangle's vertices (0 points)
-			assertNull("the intersection point is out of the triangle - need 0 intersections", triangle.findIntsersections(ray1));
+			assertNull("the intersection point is out of the triangle - need 0 intersections", triangle.findIntersections(ray1));
 
 			// =============== Boundary Values Tests ==================
 
 			// TC04: The ray intersects the plane on one of the triangle's sides (0 points)
 			ray = new Ray(new Point(4.26, -1.28, 2.14), new Vector(-0.15, 3.07, -2.14));
-			assertNull("on the side - need 0 intersections", triangle.findIntsersections(ray));
+			assertNull("on the side - need 0 intersections", triangle.findIntersections(ray));
 
 			// TC05: The ray intersects the plane on one of the triangle's vertices (0 points)
 			ray = new Ray(new Point(3.7, -0.71, 1.44), new Vector(1.3, 0.71, -1.44));
-			assertNull("on the vertex - need 0 intersections", triangle.findIntsersections(ray));
+			assertNull("on the vertex - need 0 intersections", triangle.findIntersections(ray));
 
 			// TC06: The ray intersects the plane on the line that continues one of the sides of the triangle (0 points)
 			ray = new Ray(new Point(3.86, -4.95, 0), new Vector(2.97, 1.28, 0));
-			assertNull("the intersection point is out of the triangle - need 0 intersections", triangle.findIntsersections(ray1));
+			assertNull("the intersection point is out of the triangle - need 0 intersections", triangle.findIntersections(ray1));
 		}
 		catch (Exception ex) 
 		{

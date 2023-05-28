@@ -70,40 +70,40 @@ class PlaneTests
 			// TC01: The Ray must be neither orthogonal nor parallel to the plane and starts outside of the plane
 			// The ray intersects the plane (1 points)
 			myRay= new Ray(new Point(4,3,0), new Vector(-5.75,3.57,0));
-			assertEquals("Ray is neither orthogonal nor parallel and intersects the plane ",1, myPlane.findIntsersections(myRay).size());
+			assertEquals("Ray is neither orthogonal nor parallel and intersects the plane ",1, myPlane.findIntersections(myRay).size());
 			
 			// TC02: The Ray must be neither orthogonal nor parallel to the plane and starts outside of the plane
 			//The ray does not intersect the plane (0 points) 
 			myRay= new Ray(new Point(1,2,0), new Vector(-3,-7,0));
-			assertNull("Ray is neither orthogonal nor parallel but doesnt intersects the plane", myPlane.findIntsersections(myRay));
+			assertNull("Ray is neither orthogonal nor parallel but doesnt intersects the plane", myPlane.findIntersections(myRay));
 			
 			// =============== Boundary Values Tests ==================
 			
 			// **** Group: The ray is parallel to the plane
 			// TC03: the ray is included in the plane (0 points)
-			assertNull("A included ray has zero intersection points", myPlane.findIntsersections(myRay));
+			assertNull("A included ray has zero intersection points", myPlane.findIntersections(myRay));
 			// TC04: The ray is not included in the plane (0 points)
 			myRay= new Ray(new Point(0,-5,0), new Vector(5,0,0));
-			assertNull("An un included ray has zero intersection points", myPlane.findIntsersections(myRay));
+			assertNull("An un included ray has zero intersection points", myPlane.findIntersections(myRay));
 			
 			// **** Group: The ray is orthogonal to the plane
 			// TC05: The ray is before the plane (1 points)
 			myRay= new Ray(new Point(2,4,0), new Vector(-3,3,5));
-			assertEquals("Ray is orthogonal to the plane and starts before the plane",1, myPlane.findIntsersections(myRay).size());
+			assertEquals("Ray is orthogonal to the plane and starts before the plane",1, myPlane.findIntersections(myRay).size());
 			// TC06: The ray is in the plane (0 points)
 			myRay= new Ray(new Point(-5,0,0), new Vector(-3,3,5));
-			assertNull("Ray is orthogonal to the plane and starts at the plane", myPlane.findIntsersections(myRay));
+			assertNull("Ray is orthogonal to the plane and starts at the plane", myPlane.findIntersections(myRay));
 			// TC07: The ray is after the plane (0 points)
 			myRay= new Ray(new Point(-7,2,4), new Vector(-3,3,5));
-			assertNull("Ray is orthogonal to the plane and starts after the plane",myPlane.findIntsersections(myRay));
+			assertNull("Ray is orthogonal to the plane and starts after the plane",myPlane.findIntersections(myRay));
 			
 			// TC08: The ray is neither orthogonal nor parallel to the plane and begins at the plane (0 points)
 			myRay= new Ray(new Point(-1,-1,0), new Vector(1,0,0));
-			assertNull("Ray is neither orthogonal nor parallel to and begins at reference point in the plane", myPlane.findIntsersections(myRay));
+			assertNull("Ray is neither orthogonal nor parallel to and begins at reference point in the plane", myPlane.findIntersections(myRay));
 			
 			// TC09: The ray is neither orthogonal nor parallel to the plane and begins at the same point which appears as reference point in the plane (0 points)
 			myRay= new Ray(new Point(0,0,3), new Vector(-5,4,-3));
-			assertNull("Ray is neither orthogonal nor parallel to and begins at the plane", myPlane.findIntsersections(myRay));
+			assertNull("Ray is neither orthogonal nor parallel to and begins at the plane", myPlane.findIntersections(myRay));
 		}
 		catch(Exception ex)
 		{

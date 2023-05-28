@@ -66,7 +66,7 @@ class CameraRaysIntegrationTests
 			List<Point> temp;
 			try 
 			{
-				temp = geomety.findIntsersections(ray);// finding the intersection points between the geometry and the current ray	
+				temp = geomety.findIntersections(ray);// finding the intersection points between the geometry and the current ray	
 				if (temp != null)// if there are intersection points, add them to the list of the intersection points
 					{
 						intersectionPoints.addAll(temp);

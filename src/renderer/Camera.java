@@ -95,7 +95,7 @@ public class Camera
 	 * The resulting color is calculated using the configured RayTracerBase object
 	 * @throws MissingResourceException If any required resources (e.g., imageWriter, rayTracerBase, etc.) are missing
 	 */
-	public void renderImage() throws MissingResourceException
+	public Camera renderImage() throws MissingResourceException
 	{
        try 
        {
@@ -163,6 +163,7 @@ public class Camera
        {
 	    	throw new MissingResourceException("No implemented yet",e.getClassName(),e.getKey());
        }
+       return this;
 	}
 
 	/**

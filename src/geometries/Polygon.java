@@ -13,7 +13,7 @@ import primitives.Vector;
 /** Polygon class represents two-dimensional polygon in 3D Cartesian coordinate
  * system
  * @author Dan */
-public class Polygon implements Geometry {
+public class Polygon extends Geometry {
    /** List of polygon's vertices */
    protected final List<Point> vertices;
    /** Associated plane in which the polygon lays */
@@ -88,13 +88,16 @@ public class Polygon implements Geometry {
 	 * @return a list of the intersection points with the polygon 
 	 * @param ray - the ray that intersects with the polygon
 	 */
-   public List<Point> findIntsersections(Ray ray)
+   @Override
+   protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray)
 	{
-		List<Point> rayPoints = plane.findIntsersections(ray);
+		List<GeoPoint> rayPoints = plane.findGeoIntersections(ray);
 		if (rayPoints == null)
 		{
 			return null;
 		}
+		rayPoints.get(0).geometry = this;
+		
 		//check if the point in out or on the triangle:
 		List<Vector> normalsList = new ArrayList<Vector>();
 		Vector vI;

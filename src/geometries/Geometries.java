@@ -8,7 +8,7 @@ import primitives.Point;
 import primitives.Ray;
 
 
-public class Geometries implements Intersectable
+public class Geometries extends Intersectable
 {
 	private List<Intersectable> l;
 	
@@ -46,12 +46,12 @@ public class Geometries implements Intersectable
 	* @param ray - the ray that intersects with the object		
     */
 	@Override
-	public List<Point> findIntsersections(Ray ray) 
-	{
-	   List<Point> temp = null;
+	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) 
+	{ 
+	   List<GeoPoint> temp = null;
 		for ( Intersectable intersectable : l) 
 		{
-			List<Point> intersection = intersectable.findIntsersections(ray);
+			List<GeoPoint> intersection = intersectable.findGeoIntersections(ray);
 			if (intersection != null)
 			{
 				if(temp == null)
