@@ -76,6 +76,8 @@ public class Plane extends Geometry
 	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray)
 	{
 		double nv = normal.dotProduct(ray.getDir());
+		
+		// If the ray is parallel to the plane, return null
 		if (isZero(nv))
 		{
 			return null;
@@ -84,10 +86,13 @@ public class Plane extends Geometry
 		{
 			Vector pSubtractP0 = point.subtract(ray.getP0());
 			double t = alignZero((normal.dotProduct(pSubtractP0))/nv);
+			
+			 // If the intersection point is behind the ray's origin, return null
 			if(t <= 0)
 			{
 				return null;
 			}
+			 // Return a list containing the intersection point with the plane
 			return List.of(new GeoPoint(this,ray.getPoint(t)));// returns the list
 		}
 		catch(Exception ex) 

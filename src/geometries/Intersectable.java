@@ -9,18 +9,22 @@ import primitives.Ray;
  * interface for ray intersections
  * */
 
-public abstract class Intersectable {
-	public static class GeoPoint {
+public abstract class Intersectable 
+{
+	public static class GeoPoint 
+	{
 		public Geometry geometry;
 		public Point point;
 
-		public GeoPoint(Geometry geometry, Point point) {
+		public GeoPoint(Geometry geometry, Point point) 
+		{
 			this.geometry = geometry;
 			this.point = point;
 		}
 
 		@Override
-		public boolean equals(Object obj) {
+		public boolean equals(Object obj) 
+		{
 			if (this == obj)
 			{
 				return true;
@@ -51,7 +55,9 @@ public abstract class Intersectable {
 	 */
 	public List<Point> findIntersections(Ray ray) 
 	{
+		// Find the list of GeoPoint objects representing the intersection points
 		var geoList = findGeoIntersections(ray);
+		// Map the GeoPoint objects to Point objects and return the list if not null
 		return geoList == null ? null : geoList.stream().map(gp -> gp.point).toList();
 	}
 	
@@ -59,7 +65,7 @@ public abstract class Intersectable {
 	{
 		return findGeoIntersectionsHelper(ray);
 	}
-	
+
 	protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray) ;
 
 }

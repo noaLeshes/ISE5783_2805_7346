@@ -29,39 +29,41 @@ public class Cylinder extends Tube
     /**
      * Returns the normal vector to the cylinder at a given point.
      * @param p0 The point on the cylinder's surface.
-     * @return null.
-     */
+     * @return The normal vector to the cylinder at the given point, or null if the point is not on the cylinder's surface.
+     * */
 
-	 @Override
-	    public Vector getNormal(Point point) {
+	@Override
+	public Vector getNormal(Point point) 
+	{
 
-	        Point p0 = getAxisRay().getP0();
-	        Vector dir = getAxisRay().getDir();
-	        Point pTop = p0.add(dir.scale(height));
+	   Point p0 = getAxisRay().getP0();
+	   Vector dir = getAxisRay().getDir();
+	   Point pTop = p0.add(dir.scale(height));
 
-	        //if the point is at the top of the cylinder
-	        if (point.equals(pTop) || Util.isZero(dir.dotProduct(point.subtract(pTop))))
-	        {
-	            return dir;
-	        }
+	   //if the point is at the top of the cylinder
+	   if (point.equals(pTop) || Util.isZero(dir.dotProduct(point.subtract(pTop))))
+	     {
+	        return dir;
+	     }
 
-	        //if the point is at the base of the cylinder
-	        if (point.equals(p0) || Util.isZero(dir.dotProduct(point.subtract(p0))))
-	        {
-	            return dir.scale(-1);
-	        }
+	   //if the point is at the base of the cylinder
+	   if (point.equals(p0) || Util.isZero(dir.dotProduct(point.subtract(p0))))
+	     {
+	        return dir.scale(-1);
+	     }
 
-	        return super.getNormal(point);
-	    }
+	   return super.getNormal(point);
+	 }
 	 
-	     /**	  
-		 * @return a list of the intersection points with the Cylinder 
-		 * @param ray - the ray that intersects with the Cylinder
-		 */
-		@Override
-		   protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray)
-		{
-		   return null;
-		}
+	/**	  
+	* @return a list of the intersection points with the Cylinder 
+	* @param ray - the ray that intersects with the Cylinder
+	*/
+	@Override
+	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray)
+	{
+		return null;
 	}
+	
+}
 

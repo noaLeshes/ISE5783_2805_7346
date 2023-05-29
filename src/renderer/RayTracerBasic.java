@@ -2,7 +2,12 @@ package renderer;
 
 import scene.Scene;
 import primitives.*;
+import geometries.Intersectable;
 import geometries.Intersectable.GeoPoint;
+
+import lighting.LightSource;
+
+import static primitives.Util.alignZero;
 
 /**
  * @author 	Noa leshes and Miri Ordentlich
@@ -20,12 +25,102 @@ public class RayTracerBasic extends RayTracerBase
 		super(scene);
 	}
 	
-	private Color calcColor(GeoPoint point)
+	/**
+	* Calculates the color at the specified intersection point.
+	* The color is determined by combining the ambient light intensity,
+	* the emission color of the intersected geometry, and the local
+	* effects (diffuse and specular reflections) at the point.
+	* @param point The intersection point.
+	* @param ray The ray that intersected the geometry.
+	* @return The color at the intersection point.
+	*/
+	private Color calcColor(GeoPoint point, Ray ray)
 	{
 		
-		return scene.ambientLight.getIntensity().add(point.geometry.getEmission());
+		return scene.ambientLight.getIntensity()
+				.add(point.geometry.getEmission())
+				.add(calcLocalEffects(point, ray));
 		
 	}
+	
+	/**
+	* Calculates the local effects (diffuse and specular reflections) at the specified intersection point.
+	* @param intersection The intersection point and associated geometry information.
+	* @param ray The ray that intersected the geometry.
+	* @return The color resulting from the local effects at the intersection point.
+	*/
+	private Color calcLocalEffects (Intersectable.GeoPoint intersection, Ray ray)
+	{
+		Vector v = ray.getDir ();
+        Vector n = intersection.geometry.getNormal(intersection.point);
+        double nv = alignZero(n.dotProduct(v));
+       
+     // If the dot product between the normal and the ray direction is zero, return black color
+        if (nv == 0)
+            return Color.BLACK;
+       
+        int nShininess = intersection.geometry.getMaterial().nShininess;
+        Double3 kd = intersection.geometry.getMaterial().kD;
+        Double3 ks = intersection.geometry.getMaterial().kS;
+        Color color = Color.BLACK;
+     // Iterate over all light sources in the scene
+        for (LightSource lightSource : scene.lights) 
+        {
+            Vector l = lightSource.getL(intersection.point).normalize();
+            double nl = alignZero(n.dotProduct(l));
+            // If the dot product between the normal and the light direction is greater than zero
+            // (indicating the light is on the same side as the normal), perform calculations
+            if (nl * nv > 0) 
+            { 
+                Color lightIntensity = lightSource.getIntensity(intersection.point);
+             	// Add the diffusive and specular components to the overall color
+                color = color.add(calcDiffusive(kd, nl, lightIntensity),
+                        calcSpecular(ks, l, n,nl, v, nShininess, lightIntensity));
+            }
+        }
+        return color;
+	}
+	
+	/** 
+	* Calculates the specular reflection component of the light at the specified intersection point.
+	* @param ks The specular reflection coefficient.
+	* @param l The direction vector from the light source to the intersection point.
+	* @param n The normal vector at the intersection point.
+	* @param nl The dot product between the normal vector and the light direction vector.
+	* @param v The view direction vector.
+	* @param nShininess The shininess value of the material.
+	* @param lightIntensity The intensity of the light source at the intersection point.
+	* @return The color resulting from the specular reflection.
+	*/
+	private Color calcSpecular(Double3 ks, Vector l, Vector n, double nl, Vector v,int nShininess, Color lightIntensity) 
+	{
+	     l = l.normalize();
+	     Vector r = l.subtract(n.scale(2*nl)).normalize();
+	     double d = alignZero(-v.dotProduct(r));
+	     
+	  // If the dot product between the view direction and the reflection vector is less than or equal to 0, return black color
+	     if(d <= 0)
+	    	 return Color.BLACK;
+	  // Calculate and return the specular reflection color
+	     return lightIntensity.scale(ks.scale(Math.pow(d,nShininess)));
+	}
+	
+	/**
+	* Calculates the diffuse reflection component of the light at the specified intersection point.
+	* @param kd The diffuse reflection coefficient.
+	* @param nl The dot product between the normal vector and the light direction vector.
+	* @param lightIntensity The intensity of the light source at the intersection point.
+	* @return The color resulting from the diffuse reflection.
+	*/
+	private Color calcDiffusive(Double3 kd, double nl, Color lightIntensity)
+	{
+		// If the dot product between the normal and light direction is negative, take its absolute value
+        if(nl < 0)
+           nl = -nl;
+     // Calculate and return the diffuse reflection color
+        return lightIntensity.scale(kd).scale(nl);
+	}
+	
 	 /**
      * Traces a ray in the scene and calculates the color at the intersection point.
      * This basic implementation finds the closest intersection point of the ray with the scene's geometries.
@@ -38,8 +133,10 @@ public class RayTracerBasic extends RayTracerBase
     @Override
 	public primitives.Color traceRay(Ray ray) throws IllegalArgumentException 
 	{
+    	// Find the closest intersection point of the ray with the scene's geometries
 		GeoPoint closestPoint = ray.findClosestGeoPoint(scene.geometries.findGeoIntersections(ray));
-		return closestPoint == null ? scene.backgroundColor : calcColor(closestPoint);
+		// Calculate and return the color at the intersection point. If no intersection is found, return the background color of the scene
+		return closestPoint == null ? scene.backgroundColor : calcColor(closestPoint, ray);
 		
 	}
 }

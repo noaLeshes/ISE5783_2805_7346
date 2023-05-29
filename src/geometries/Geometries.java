@@ -48,19 +48,27 @@ public class Geometries extends Intersectable
 	@Override
 	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) 
 	{ 
+		// Initialize a temporary list to store the intersection points
 	   List<GeoPoint> temp = null;
-		for ( Intersectable intersectable : l) 
+	   
+		// Iterate over each intersectable geometry in the list
+	   for ( Intersectable intersectable : l) 
 		{
-			List<GeoPoint> intersection = intersectable.findGeoIntersections(ray);
-			if (intersection != null)
-			{
+			// Find the intersection points between the ray and the current geometry
+		   List<GeoPoint> intersection = intersectable.findGeoIntersections(ray);
+			// If there are intersection points, add them to the temporary list
+		   	if (intersection != null)
+			{	
+		   		// Initialize the temporary list if it's null
 				if(temp == null)
 				{
 					temp = new LinkedList <>();
 				}
+				// Add all the intersection points to the temporary list
 				temp.addAll(intersection); 
 			}
 		}
+		// Return the temporary list of intersection points
 		return temp;	
 	}
 }
