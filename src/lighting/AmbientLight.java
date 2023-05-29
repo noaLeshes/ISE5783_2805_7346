@@ -32,9 +32,7 @@ public class AmbientLight extends Light
 		super(iA.scale(kA));
 	}
 	
-	 /**
-     * @return The intensity color of the ambient light
-     */
+
 
 	
 

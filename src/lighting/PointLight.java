@@ -11,11 +11,11 @@ public class PointLight extends Light implements LightSource
 	private Point position;
 	private double kC = 1, kL = 0, kQ = 0;
 	
-	/**
-	 * 
-	 * @param intensity
-	 * @param position
-	 */
+	 /**
+     * Constructs a point light with the given intensity and position.
+     * @param intensity The intensity of the light.
+     * @param position  The position of the light source.
+     */
 	public PointLight(Color intensity, Point position) 
 	{
 		super(intensity);
@@ -23,39 +23,35 @@ public class PointLight extends Light implements LightSource
 	}
 
 	/**
-	 * 
-	 * @param kC
-	 * @return PointLight
-	 */
+     * Sets the constant attenuation factor of the light.
+     * @param kC The constant attenuation factor to set.
+     * @return The PointLight object with the updated constant attenuation factor.
+     */
 	public PointLight setkC(double kC) 
 	{
 		this.kC = kC;
 		return this;
-		
 	}
 
 	/**
-	 * 
-	 * @param kL
-	 * @return PointLight
-	 */
-	public PointLight setkL(double kL) 
+     * Sets the linear attenuation factor of the light.
+     * @param kL The linear attenuation factor to set.
+     * @return The PointLight object with the updated linear attenuation factor.
+     */	public PointLight setkL(double kL) 
 	{
 		this.kL = kL;
 		return this;
-
 	}
 
-	/**
-	 * 
-	 * @param kQ
-	 * @return PointLight
-	 */
+     /**
+      * Sets the quadratic attenuation factor of the light.
+      * @param kQ The quadratic attenuation factor to set.
+      * @return The PointLight object with the updated quadratic attenuation factor.
+      */
 	public PointLight setkQ(double kQ) 
 	{
 		this.kQ = kQ;
 		return this;
-
 	}
 
 	/** 

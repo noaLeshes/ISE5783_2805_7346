@@ -49,10 +49,11 @@ public abstract class Intersectable
 
 	}
 
-	/*
-	 * findIntsersections is a function that returns all the intersection points
-	 * with geometry
-	 */
+	 /**
+     * Finds all intersection points between the geometry and a given ray.
+     * @param ray The ray to intersect with the geometry.
+     * @return A list of intersection points with the geometry, or null if there are no intersections.
+     */
 	public List<Point> findIntersections(Ray ray) 
 	{
 		// Find the list of GeoPoint objects representing the intersection points
@@ -61,11 +62,21 @@ public abstract class Intersectable
 		return geoList == null ? null : geoList.stream().map(gp -> gp.point).toList();
 	}
 	
+	/**
+     * Finds all GeoPoints representing the intersection points between the geometry and a given ray.
+     * @param ray The ray to intersect with the geometry.
+     * @return A list of GeoPoints representing the intersection points with the geometry, or null if there are no intersections.
+     */
 	public List<GeoPoint> findGeoIntersections(Ray ray) 
 	{
 		return findGeoIntersectionsHelper(ray);
 	}
-
+	
+	 /**
+     * Helper method for finding the GeoPoints representing the intersection points between the geometry and a given ray.
+     * @param ray The ray to intersect with the geometry.
+     * @return A list of GeoPoints representing the intersection points with the geometry, or null if there are no intersections.
+     */
 	protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray) ;
 
 }
