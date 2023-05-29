@@ -15,7 +15,8 @@ import scene.Scene;
  * 
  * @author Dan
  */
-public class LightsTests {
+public class LightsTests 
+{
 	private final Scene scene1 = new Scene("Test scene");
 	private final Scene scene2 = new Scene("Test scene")
 			.setAmbientLight(new AmbientLight(new Color(WHITE), new Double3(0.15)));
@@ -41,7 +42,8 @@ public class LightsTests {
 	private static final double SPHERE_RADIUS = 50d;
 
 	// The triangles' vertices:
-	private final Point[] vertices = {
+	private final Point[] vertices = 
+		{
 			// the shared left-bottom:
 			new Point(-110, -110, -150),
 			// the shared right-top:
@@ -49,7 +51,8 @@ public class LightsTests {
 			// the right-bottom
 			new Point(110, -110, -150),
 			// the left-top
-			new Point(-75, 78, 100) };
+			new Point(-75, 78, 100) 
+		};
 	private final Point sphereLightPosition = new Point(-50, -50, 25);
 	private final Point trianglesLightPosition = new Point(30, 10, -100);
 	private final Vector trianglesLightDirection = new Vector(-2, -2, -2);
@@ -61,7 +64,8 @@ public class LightsTests {
 
 	/** Produce a picture of a sphere lighted by a directional light */
 	@Test
-	public void sphereDirectional() {
+	public void sphereDirectional() 
+	{
 		scene1.geometries.add(sphere);
 		scene1.lights.add(new DirectionalLight(sphereLightColor, new Vector(1, 1, -0.5)));
 
@@ -74,7 +78,8 @@ public class LightsTests {
 
 	/** Produce a picture of a sphere lighted by a point light */
 	@Test
-	public void spherePoint() {
+	public void spherePoint() 
+	{
 		scene1.geometries.add(sphere);
 		scene1.lights.add(new PointLight(sphereLightColor, sphereLightPosition).setkL(0.001).setkQ(0.0002));
 
@@ -101,7 +106,8 @@ public class LightsTests {
 
 	/** Produce a picture of two triangles lighted by a directional light */
 	@Test
-	public void trianglesDirectional() {
+	public void trianglesDirectional() 
+	{
 		scene2.geometries.add(triangle1, triangle2);
 		scene2.lights.add(new DirectionalLight(trianglesLightColor, trianglesLightDirection));
 
@@ -114,7 +120,8 @@ public class LightsTests {
 
 	/** Produce a picture of two triangles lighted by a point light */
 	@Test
-	public void trianglesPoint() {
+	public void trianglesPoint() 
+	{
 		scene2.geometries.add(triangle1, triangle2);
 		scene2.lights.add(new PointLight(trianglesLightColor, trianglesLightPosition).setkL(0.001).setkQ(0.0002));
 
@@ -127,7 +134,8 @@ public class LightsTests {
 
 	/** Produce a picture of two triangles lighted by a spotlight */
 	@Test
-	public void trianglesSpot() {
+	public void trianglesSpot() 
+	{
 		scene2.geometries.add(triangle1, triangle2);
 		scene2.lights.add(new SpotLight(trianglesLightColor, trianglesLightPosition, trianglesLightDirection)
 				.setkL(0.001).setkQ(0.0001));

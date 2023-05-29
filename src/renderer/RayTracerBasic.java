@@ -55,7 +55,14 @@ public class RayTracerBasic extends RayTracerBase
         Vector n = intersection.geometry.getNormal(intersection.point);
         double nv = alignZero(n.dotProduct(v));
        
-     // If the dot product between the normal and the ray direction is zero, return black color
+        // If the dot product between the normal and the ray direction is zero, return black color
+        /* the ray is parallel to the surface. 
+         * In this case, there is no contribution from the light sources because 
+         * there is no angle between the surface normal and the light direction, 
+         * resulting in no diffuse or specular reflection.
+         * diffuse= האור המתפשט לכל כיוון
+         * specular = האור המוחזר הלאה בזווית הנגדית לזאת שממנה הגיע האור
+         * */  
         if (nv == 0)
             return Color.BLACK;
        
@@ -63,7 +70,7 @@ public class RayTracerBasic extends RayTracerBase
         Double3 kd = intersection.geometry.getMaterial().kD;
         Double3 ks = intersection.geometry.getMaterial().kS;
         Color color = Color.BLACK;
-     // Iterate over all light sources in the scene
+        // Iterate over all light sources in the scene
         for (LightSource lightSource : scene.lights) 
         {
             Vector l = lightSource.getL(intersection.point).normalize();
@@ -87,7 +94,7 @@ public class RayTracerBasic extends RayTracerBase
 	* @param l The direction vector from the light source to the intersection point.
 	* @param n The normal vector at the intersection point.
 	* @param nl The dot product between the normal vector and the light direction vector.
-	* @param v The view direction vector.
+	* @param v The view direction vector from the camera
 	* @param nShininess The shininess value of the material.
 	* @param lightIntensity The intensity of the light source at the intersection point.
 	* @return The color resulting from the specular reflection.
@@ -95,10 +102,16 @@ public class RayTracerBasic extends RayTracerBase
 	private Color calcSpecular(Double3 ks, Vector l, Vector n, double nl, Vector v,int nShininess, Color lightIntensity) 
 	{
 	     l = l.normalize();
+	     //points in the direction that light would be perfectly reflected if the surface had a mirror-like reflection property.
 	     Vector r = l.subtract(n.scale(2*nl)).normalize();
+	    /* the angle between the direction from the intersection point to
+		the camera and the direction of the perfect reflection of light.*/
 	     double d = alignZero(-v.dotProduct(r));
 	     
-	  // If the dot product between the view direction and the reflection vector is less than or equal to 0, return black color
+	  /* If the dot product between the view direction and the reflection vector is less than or equal to 0, return black color, 
+	     since the specular reflection would have no impact on the final color
+	      reflection direction vector r and the view direction
+	      vector v is such that they are pointing in opposite*/
 	     if(d <= 0)
 	    	 return Color.BLACK;
 	  // Calculate and return the specular reflection color
@@ -115,7 +128,7 @@ public class RayTracerBasic extends RayTracerBase
 	private Color calcDiffusive(Double3 kd, double nl, Color lightIntensity)
 	{
 		// If the dot product between the normal and light direction is negative, take its absolute value
-        if(nl < 0)
+        if(nl < 0) //The light is hitting the surface from the opposite direction of the normal
            nl = -nl;
      // Calculate and return the diffuse reflection color
         return lightIntensity.scale(kd).scale(nl);
