@@ -4,7 +4,7 @@ import scene.Scene;
 import primitives.*;
 import geometries.Intersectable;
 import geometries.Intersectable.GeoPoint;
-
+import primitives.*;
 import lighting.LightSource;
 
 import static primitives.Util.alignZero;
@@ -77,6 +77,8 @@ public class RayTracerBasic extends RayTracerBase
             double nl = alignZero(n.dotProduct(l));
             // If the dot product between the normal and the light direction is greater than zero
             // (indicating the light is on the same side as the normal), perform calculations
+            //If the product nl * nv is positive, it means that the light and the ray are on 
+            //the same side of the surface
             if (nl * nv > 0) 
             { 
                 Color lightIntensity = lightSource.getIntensity(intersection.point);
