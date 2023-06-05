@@ -80,9 +80,14 @@ public class PointLight extends Light implements LightSource
 		return p.subtract(position).normalize();
 	}
  
-	public double getDistance(Point point)
+	/**
+	 * Calculates the distance between the light source and the specified point.
+	 * @param point The point for which the distance is calculated.
+	 * @return The distance between the light source and the point.
+	 */
+	public double getDistance(Point point) 
 	{
-		return position.distance(point);
+	    return position.distance(point);
 	}
-	
+
 }

@@ -17,29 +17,59 @@ import static primitives.Util.alignZero;
 public class RayTracerBasic extends RayTracerBase
 {
 	
-	private static final double DELTA = 0.1;
-	private boolean unshaded(GeoPoint gp , Vector l, Vector n, LightSource ls) 
+	private static final double DELTA = 0.1; //Rayhead offset size for shading rays
+	/**
+	 * Checks if a point on a surface is unshaded by other objects in the scene.
+	 * 
+	 * @param gp The geometric point on the surface.
+	 * @param l The direction vector from the light source to the point.
+	 * @param n The normal vector at the point.
+	 * @param ls The light source.
+	 * @return True if the point is unshaded, false otherwise.
+	 */
+	private boolean unshaded(GeoPoint gp, Vector l, Vector n, LightSource ls) 
 	{
-		double maxDistance = ls.getDistance(gp.point);
-		Vector lightDirection = l.scale(-1); // from point to light source
-        Vector epsVector = n.scale(n.dotProduct(lightDirection) > 0 ? DELTA : -DELTA);
-		Point point = gp.point.add(epsVector);
-		Ray lightRay = new Ray(point, lightDirection);
-		List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay);
-		if (intersections == null) 
-		{
-			return true;
-	    }
-	    double dis;
-	    for(GeoPoint gPoint : intersections)
+	    // Determine the maximum distance to the light source
+	    double maxDistance = ls.getDistance(gp.point);
+	    
+	    // Calculate the direction of the light from the point to the light source
+	    Vector lightDirection = l.scale(-1); // from point to light source
+	    
+	    // Calculate a small epsilon vector in the direction of the surface normal
+	    Vector epsVector = n.scale(n.dotProduct(lightDirection) > 0 ? DELTA : -DELTA);
+	    
+	    // Shift the point slightly along the surface normal
+	    Point point = gp.point.add(epsVector);
+	    
+	    // Create a ray from the shifted point towards the light source
+	    Ray lightRay = new Ray(point, lightDirection);
+	    
+	    // Find all intersections between the ray and the scene's geometries
+	    List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay);
+	    
+	    // If no intersections are found, the point is unshaded
+	    if (intersections == null) 
 	    {
-	    	dis = gPoint.point.distance(gp.point);
-	    	if(dis < maxDistance)
-	    	{
-	    		return false;
-	    	}
-  	    }
-	    return true;	
+	        return true;
+	    }
+	    
+	    double dis;
+	    
+	    // Check each intersection point
+	    for (GeoPoint gPoint : intersections) 
+	    {
+	        // Calculate the distance between the intersection point and the original point
+	        dis = gPoint.point.distance(gp.point);
+	        
+	        // If the distance is less than the maximum distance to the light source, the point is shaded
+	        if (dis < maxDistance) 
+	        {
+	            return false;
+	        }
+	    }
+	    
+	    // If no shaded points are found, the point is unshaded
+	    return true;
 	}
 
 	/**
