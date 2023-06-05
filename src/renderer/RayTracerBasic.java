@@ -1,6 +1,7 @@
 package renderer;
 
 import scene.Scene;
+import java.util.List;
 import primitives.*;
 import geometries.Intersectable;
 import geometries.Intersectable.GeoPoint;
@@ -16,6 +17,31 @@ import static primitives.Util.alignZero;
 public class RayTracerBasic extends RayTracerBase
 {
 	
+	private static final double DELTA = 0.1;
+	private boolean unshaded(GeoPoint gp , Vector l, Vector n, LightSource ls) 
+	{
+		double maxDistance = ls.getDistance(gp.point);
+		Vector lightDirection = l.scale(-1); // from point to light source
+        Vector epsVector = n.scale(n.dotProduct(lightDirection) > 0 ? DELTA : -DELTA);
+		Point point = gp.point.add(epsVector);
+		Ray lightRay = new Ray(point, lightDirection);
+		List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay);
+		if (intersections == null) 
+		{
+			return true;
+	    }
+	    double dis;
+	    for(GeoPoint gPoint : intersections)
+	    {
+	    	dis = gPoint.point.distance(gp.point);
+	    	if(dis < maxDistance)
+	    	{
+	    		return false;
+	    	}
+  	    }
+	    return true;	
+	}
+
 	/**
      * Constructs a RayTracerBasic object with the given scene.
      * @param scene The scene to be rendered.
@@ -81,10 +107,13 @@ public class RayTracerBasic extends RayTracerBase
             //the same side of the surface
             if (nl * nv > 0) 
             { 
+            	if (unshaded(intersection,l, n, lightSource))
+            	{
                 Color lightIntensity = lightSource.getIntensity(intersection.point);
              	// Add the diffusive and specular components to the overall color
                 color = color.add(calcDiffusive(kd, nl, lightIntensity),
                         calcSpecular(ks, l, n,nl, v, nShininess, lightIntensity));
+            	}
             }
         }
         return color;

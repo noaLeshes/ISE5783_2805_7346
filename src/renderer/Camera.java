@@ -311,4 +311,5 @@ public class Camera
 		this.rayTracerBase = rayTracerBase;
 		return this;
 	}
+
 }
