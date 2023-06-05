@@ -19,6 +19,10 @@ public class Ray
 	final Vector dir;
 	
 	/**
+	 * A constant for the size of moving first rays for shading rays
+	 * */
+	private static final double DELTA = 0.1; //Rayhead offset size for shading rays	
+	/**
 	 * Constructs a new ray with the given origin point and direction vector.
 	 * @param p The origin point of the ray.
 	 * @param v The direction vector of the ray.
@@ -29,6 +33,28 @@ public class Ray
 		dir = v.normalize();
 	}
 	
+	/**
+	 * Constructs a new ray with the given origin point, direction vector, and surface normal.
+	* The ray is offset from the origin point along the surface normal direction by a small delta value.
+	* @param p0 The origin point of the ray.
+	* @param direction The direction vector of the ray.
+	* @param normal The surface normal vector.
+	*/
+	public Ray(Point p0, Vector direction, Vector normal)
+	{
+		// Calculate the offset vector based on the surface normal and the dot product of the direction and normal vectors.
+		Vector delta = normal.scale(normal.dotProduct(direction) > 0 ? DELTA : - DELTA);
+		// Add the offset vector to the origin point to create a new starting point for the ray.
+		this.p0 = p0.add(delta);
+
+		// Set the direction vector of the ray.
+		this.dir = direction;
+	}
+
+
+
+
+
     /**
 	 * @return the p0 of the ray
 	 */
