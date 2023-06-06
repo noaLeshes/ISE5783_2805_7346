@@ -52,9 +52,6 @@ public class Ray
 	}
 
 
-
-
-
     /**
 	 * @return the p0 of the ray
 	 */

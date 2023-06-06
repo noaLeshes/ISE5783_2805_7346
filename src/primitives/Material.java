@@ -2,8 +2,20 @@ package primitives;
 
 public class Material 
 {
-	public Double3 kD = new Double3(0), kS = new Double3(0), kT = new Double3(0),kR = new Double3(0);
-	public int nShininess = 0;
+	 /** The diffuse reflection coefficient of the material. */
+    public Double3 kD = new Double3(0);
+    
+    /** The specular reflection coefficient of the material. */
+    public Double3 kS = new Double3(0);
+    
+    /** The transparency coefficient of the material. */
+    public Double3 kT = new Double3(0);
+    
+    /** The reflection coefficient of the material. */
+    public Double3 kR = new Double3(0);
+    
+    /** The shininess value of the material. */
+    public int nShininess = 0;
 
 	 /**
      * Sets the diffuse reflection coefficient of the material.
@@ -48,24 +60,44 @@ public class Material
 		return this;
 	}
 	
+	 /**
+     * Sets the transparency coefficient of the material.
+     * @param kT The transparency coefficient to set.
+     * @return The Material object with the updated transparency coefficient.
+     */
 	public Material setkT(Double3 kT) 
 	{
 		this.kT = kT;
 		return this;
 	}
 	
+	 /**
+     * Sets the transparency coefficient of the material.
+     * @param kT The transparency coefficient to set.
+     * @return The Material object with the updated transparency coefficient.
+     */
 	public Material setkT(double kT) 
 	{
 		this.kT = new Double3(kT);
 		return this;
 	}
 	
+    /**
+     * Sets the reflection coefficient of the material.
+     * @param kR The reflection coefficient to set.
+     * @return The Material object with the updated reflection coefficient.
+     */
 	public Material setkR(Double3 kR) 
 	{
 		this.kR = kR;
 		return this;
 	}
 	
+    /**
+     * Sets the reflection coefficient of the material.
+     * @param kR The reflection coefficient to set.
+     * @return The Material object with the updated reflection coefficient.
+     */
 	public Material setkR(double kR) 
 	{
 		this.kR = new Double3(kR);
