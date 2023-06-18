@@ -123,7 +123,7 @@ public class Picture
 		 scene.lights.add(new SpotLight(Color.WHITE, new Point(-250, 400, 1500), new Vector(-40,-1, -2)) //
 		         .setkL(0.000000004).setkQ(0.000000006));
 		scene.lights.add(new DirectionalLight( new Color(150,150,50), new Vector(-50, -1, -1))); //purplish 
-			//Add a spot light to the scene (bluish-green)
+
 			
 		
 		 camera.setImageWriter(new ImageWriter("Picture", 500, 500)) //

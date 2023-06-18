@@ -151,11 +151,13 @@ public class RayTracerBasic extends RayTracerBase
      */
 	private Color calcGlobalEffects(GeoPoint gp, Ray v, int level, Double3 k) 
 	{
+		//kkr - all of the coefficients together 
 		Color color = Color.BLACK;
 		Vector n = gp.geometry.getNormal(gp.point);
 		Material material = gp.geometry.getMaterial();
         // Calculate reflection effects
 		Double3 kkr = material.kR.product(k);
+		// if kkr is lower then MIN_CALC_COLOR_K - there is  almost no effect on the the color, stopping the recursion 
 		if (!kkr.lowerThan(MIN_CALC_COLOR_K))// if (kkr > MIN_CALC_COLOR_K)
 		{
 			color = calcGlobalEffect(constructReflectedRay(gp.point, v, n), level, material.kR, kkr);
