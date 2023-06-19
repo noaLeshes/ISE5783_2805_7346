@@ -7,6 +7,8 @@ import static primitives.Util.isZero;
 
 import java.util.MissingResourceException;
 
+import geometries.Plane;
+
 /**
  * @author 	Noa leshes and Miri Ordentlich
  */
@@ -18,6 +20,17 @@ public class Camera
 	private double height, width, distance;// The size and distance of the view plane
 	private ImageWriter imageWriter;
 	private RayTracerBase rayTracerBase;
+	
+	
+	//depth of field
+	private boolean dofFlag = false;
+	private Plane focalPlane;
+	private double focalPlaneDis;
+	private Point[] aperturePoints;
+	private double apertureSize;
+	private int numOfPoints;
+	
+	
 	
 	/**
 	 * Constructs a new Camera object with the given location and orientation vectors.
@@ -41,7 +54,15 @@ public class Camera
 	 private Color castRay(int nX,int nY,int j,int i)
 	 {
 		 Ray ray = constructRay(nX, nY, j, i);
-		 Color color = rayTracerBase.traceRay(ray);
+		 Color color;
+		 if(dofFlag)
+		 {
+			 color = AvBeamColor(ray);
+		 }
+		 else 
+		 {
+			 color = rayTracerBase.traceRay(ray);
+		 }
 		 return color;
 	 }
 	
@@ -309,6 +330,117 @@ public class Camera
 	public Camera setRayTracerBase(RayTracerBase rayTracerBase) 
 	{
 		this.rayTracerBase = rayTracerBase;
+		return this;
+	}
+	
+	
+	private void initializeAperturePoint()
+	{
+		int pointsInRow = (int)Math.sqrt(numOfPoints);
+		aperturePoints = new Point[pointsInRow * pointsInRow];
+		double pointsDistance = (apertureSize * 2) / pointsInRow;
+		double s = -(apertureSize + pointsDistance / 2);
+		Point initialePoint = locationPoint.add(this.v_up.scale(s).add(this.v_right.scale(s)));
+		for(int i = 0; i < pointsInRow; i++)
+		{
+			for(int j = 0; j < pointsInRow; j++)
+			{
+				this.aperturePoints[i + (j * pointsInRow)] = initialePoint
+						.add(this.v_up.scale((i + 1) * pointsDistance)
+						.add(this.v_right.scale((j + 1)*pointsDistance)));
+			}
+		}
+	}
+	
+	private Color AvBeamColor (Ray ray)
+	{
+		Color avColor = Color.BLACK;
+		Ray apertureRay;
+		Color apertureColor;
+		Point focalPoint = focalPlane.findGeoIntersections(ray).get(0).point;
+		for(Point aperturePoint : aperturePoints )
+		{
+			apertureRay = new Ray(aperturePoint, focalPoint.subtract(aperturePoint));
+			apertureColor = rayTracerBase.traceRay(apertureRay);
+			avColor = avColor.add(apertureColor.reduce(numOfPoints));
+
+		}
+		System.out.print(avColor.getColor());
+
+		return avColor;
+	}
+
+	
+	
+	
+	public boolean isDofFlag() 
+	{
+		return dofFlag;
+	}
+
+	public Camera setDofFlag(boolean myDofFlag) 
+	{
+		dofFlag = myDofFlag;
+		return this;
+	}
+
+	public Plane getFocalPlane() 
+	{
+		return focalPlane;
+	}
+
+	public Camera setFocalPlane(Plane myFocalPlane) 
+	{
+		focalPlane = myFocalPlane;
+		return this;
+	}
+
+	public double getFocalPlaneDis() 
+	{
+		return focalPlaneDis;
+	}
+
+	public Camera setFocalPlaneDis(double myFocalPlaneDis) 
+	{
+		focalPlaneDis = myFocalPlaneDis;
+		focalPlane = new Plane(locationPoint.add(this.v_to.scale(focalPlaneDis)),v_to);
+		return this;
+	}
+
+	public Point[] getAperturePoints() 
+	{
+		return aperturePoints;
+	}
+
+	public Camera setAperturePoints(Point[] myAperturePoints) 
+	{
+		aperturePoints = myAperturePoints;
+		return this;
+	}
+
+	public double getApertureSize() 
+	{
+		return apertureSize;
+	}
+
+	public Camera setApertureSize(double myApertureSize) 
+	{
+		apertureSize = myApertureSize;
+		if (myApertureSize != 0)
+		{
+			initializeAperturePoint();
+		}
+		return this;
+	}
+
+	public int getNumOfPoints() 
+	{
+		return numOfPoints;
+	}
+
+	public Camera setNumOfPoints(int myNumOfPoints) 
+	{
+		numOfPoints = myNumOfPoints;
 		return this;
 	}
 
