@@ -53,17 +53,13 @@ public class Camera
 	
 	 private Color castRay(int nX,int nY,int j,int i)
 	 {
-		 Ray ray = constructRay(nX, nY, j, i);
-		 Color color;
+		 Ray ray = this.constructRay(nX, nY, j, i);
 		 if(dofFlag)
 		 {
-			 color = AvBeamColor(ray);
+			 return AvBeamColor(ray);
 		 }
-		 else 
-		 {
-			 color = rayTracerBase.traceRay(ray);
-		 }
-		 return color;
+			 return rayTracerBase.traceRay(ray);
+		 
 	 }
 	
 	/**
@@ -354,21 +350,19 @@ public class Camera
 	
 	private Color AvBeamColor (Ray ray)
 	{
-		Color avColor = Color.BLACK;
-		Ray apertureRay;
-		Color apertureColor;
-		Point focalPoint = focalPlane.findGeoIntersections(ray).get(0).point;
-		for(Point aperturePoint : aperturePoints )
-		{
-			apertureRay = new Ray(aperturePoint, focalPoint.subtract(aperturePoint));
-			apertureColor = rayTracerBase.traceRay(apertureRay);
-			avColor = avColor.add(apertureColor.reduce(numOfPoints));
-
-		}
-		System.out.print(avColor.getColor());
-
-		return avColor;
+		Color averageColor = Color.BLACK, apertureColor;
+	    int numOfPoints = this.aperturePoints.length;
+	    Ray apertureRay;
+	    Point focalPoint = this.focalPlane.findGeoIntersections(ray).get(0).point;
+	    for (Point aperturePoint : this.aperturePoints) {
+	        apertureRay = new Ray(aperturePoint, focalPoint.subtract(aperturePoint));
+	        apertureColor = rayTracerBase.traceRay(apertureRay);
+	        averageColor = averageColor.add(apertureColor.reduce(numOfPoints));
+	    }
+	    return averageColor;
 	}
+	
+
 
 	
 	
@@ -389,11 +383,6 @@ public class Camera
 		return focalPlane;
 	}
 
-	public Camera setFocalPlane(Plane myFocalPlane) 
-	{
-		focalPlane = myFocalPlane;
-		return this;
-	}
 
 	public double getFocalPlaneDis() 
 	{
@@ -403,7 +392,7 @@ public class Camera
 	public Camera setFocalPlaneDis(double myFocalPlaneDis) 
 	{
 		focalPlaneDis = myFocalPlaneDis;
-		focalPlane = new Plane(locationPoint.add(this.v_to.scale(focalPlaneDis)),v_to);
+		focalPlane = new Plane(this.locationPoint.add(this.v_to.scale(focalPlaneDis)),this.v_to);
 		return this;
 	}
 
@@ -412,11 +401,6 @@ public class Camera
 		return aperturePoints;
 	}
 
-	public Camera setAperturePoints(Point[] myAperturePoints) 
-	{
-		aperturePoints = myAperturePoints;
-		return this;
-	}
 
 	public double getApertureSize() 
 	{
