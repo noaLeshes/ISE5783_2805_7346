@@ -23,12 +23,36 @@ public class Camera
 	
 	
 	//depth of field
-	private boolean dofFlag = false;
+	/**
+	 * Flag indicating whether the depth of field effect is enabled or not.
+	 */
+	private boolean depthOfFieldFlag = false;
+
+	/**
+	 * The focal plane used for calculating depth of field.
+	 */
 	private Plane focalPlane;
+
+	/**
+	 * The distance from the camera to the focal plane.
+	 */
 	private double focalPlaneDis;
+
+	/**
+	 * An array of points representing the locations on the camera's aperture from which rays are shot for depth of field calculations.
+	 */
 	private Point[] aperturePoints;
+
+	/**
+	 * The size of the camera's aperture.
+	 */
 	private double apertureSize;
+
+	/**
+	 * The number of aperture points to be used for depth of field calculations.
+	 */
 	private int numOfPoints;
+
 	
 	
 	
@@ -49,18 +73,33 @@ public class Camera
 		this.v_up = v_up.normalize();
 		v_right = (v_to.crossProduct(v_up)).normalize();// calculating v_right
 		this.locationPoint = locationPoint;	
+        //this.apertureSize = 0; //initialize DoF parameters.
+
 	}
 	
-	 private Color castRay(int nX,int nY,int j,int i)
-	 {
-		 Ray ray = this.constructRay(nX, nY, j, i);
-		 if(dofFlag)
-		 {
-			 return AvBeamColor(ray);
-		 }
-			 return rayTracerBase.traceRay(ray);
-		 
-	 }
+	/**
+	 * Casts a ray through a pixel in the camera's image plane and returns the color of the intersected object.
+	 * If the depth of field effect is enabled, it uses the AvBeamColor method for calculating the color.
+	 *
+	 * @param nX The normalized x-coordinate of the pixel in the image plane.
+	 * @param nY The normalized y-coordinate of the pixel in the image plane.
+	 * @param j The column index of the pixel in the image plane.
+	 * @param i The row index of the pixel in the image plane.
+	 * @return The color of the intersected object.
+	 */
+	private Color castRay(int nX, int nY, int j, int i) {
+	    // Construct a ray from the camera through the pixel (nX, nY) on the image plane
+	    Ray ray = constructRay(nX, nY, j, i);
+
+	    // If depth of field effect is enabled, calculate the color using AvBeamColor method
+	    if (depthOfFieldFlag) {
+	        return AvBeamColor(ray);
+	    }
+
+	    // Otherwise, trace the ray and return the color of the intersected object
+	    return rayTracerBase.traceRay(ray);
+	}
+
 	
 	/**
 	 * Constructs a Ray that passes through the given pixel.
@@ -330,102 +369,117 @@ public class Camera
 	}
 	
 	
-	private void initializeAperturePoint()
-	{
-		int pointsInRow = (int)Math.sqrt(numOfPoints);
-		aperturePoints = new Point[pointsInRow * pointsInRow];
-		double pointsDistance = (apertureSize * 2) / pointsInRow;
-		double s = -(apertureSize + pointsDistance / 2);
-		Point initialePoint = locationPoint.add(this.v_up.scale(s).add(this.v_right.scale(s)));
-		for(int i = 0; i < pointsInRow; i++)
-		{
-			for(int j = 0; j < pointsInRow; j++)
-			{
-				this.aperturePoints[i + (j * pointsInRow)] = initialePoint
-						.add(this.v_up.scale((i + 1) * pointsDistance)
-						.add(this.v_right.scale((j + 1)*pointsDistance)));
-			}
-		}
+	/**
+	 * Initializes the aperture points used for depth of field effect.
+	 * The method calculates the positions of aperture points based on the number of points and aperture size.
+	 * It populates the {@code aperturePoints} array with the calculated points.
+	 */
+	private void initializeAperturePoint() {
+	    // Calculate the number of points in each row/column based on the square root of the total number of points
+	    int pointsInRow = (int) Math.sqrt(numOfPoints);
+
+	    // Create a new array to store the aperture points
+	    aperturePoints = new Point[pointsInRow * pointsInRow];
+
+	    // Calculate the distance between each point based on the aperture size and number of points
+	    double pointsDistance = (apertureSize * 2) / pointsInRow;
+
+	    // Calculate the initial point on the aperture plane
+	    double s = -(apertureSize + pointsDistance / 2);
+	    Point initialPoint = locationPoint.add(this.v_up.scale(s).add(this.v_right.scale(s)));
+
+	    // Iterate over each row and column to calculate the position of each aperture point
+	    for (int i = 0; i < pointsInRow; i++) {
+	        for (int j = 0; j < pointsInRow; j++) {
+	            // Calculate the position of the current aperture point
+	            this.aperturePoints[i + (j * pointsInRow)] = initialPoint
+	                    .add(this.v_up.scale((i + 1) * pointsDistance)
+	                    .add(this.v_right.scale((j + 1) * pointsDistance)));
+	        }
+	    }
 	}
-	
-	private Color AvBeamColor (Ray ray)
+
+	/**
+	 * Calculates the average color of multiple rays passing through the aperture of the camera.
+	 * The method shoots rays from the aperture points towards the focal point on the focal plane,
+	 * and calculates the color of each ray using the configured RayTracerBase object.
+	 * The average color is calculated by summing up the colors of all rays and dividing by the number of rays.
+	 * @param ray The ray representing the main ray passing through the pixel.
+	 * @return The average color of the rays passing through the camera's aperture.
+	 */
+	private Color AvBeamColor(Ray ray) 
 	{
-		Color averageColor = Color.BLACK, apertureColor;
+	    Color averageColor = Color.BLACK;
 	    int numOfPoints = this.aperturePoints.length;
 	    Ray apertureRay;
 	    Point focalPoint = this.focalPlane.findGeoIntersections(ray).get(0).point;
+
+	    // Iterate over each aperture point and calculate the color
 	    for (Point aperturePoint : this.aperturePoints) {
+	        // Create a ray from the aperture point towards the focal point
 	        apertureRay = new Ray(aperturePoint, focalPoint.subtract(aperturePoint));
-	        apertureColor = rayTracerBase.traceRay(apertureRay);
+
+	        // Trace the ray and get the color using the configured RayTracerBase object
+	        Color apertureColor = rayTracerBase.traceRay(apertureRay);
+
+	        // Add the color to the average color, reduced by the number of points
 	        averageColor = averageColor.add(apertureColor.reduce(numOfPoints));
 	    }
+
 	    return averageColor;
 	}
-	
 
 
-	
-	
-	
-	public boolean isDofFlag() 
+	/**
+	 * Sets the depth of field flag for the camera.
+	 * @param myDepthOfFieldFlag the value indicating whether depth of field is enabled
+	 * @return the camera object with the updated depth of field flag
+	 */
+	public Camera setDepthOfFieldFlag(boolean myDepthOfFieldFlag) 
 	{
-		return dofFlag;
+	    depthOfFieldFlag = myDepthOfFieldFlag;
+	    return this;
 	}
 
-	public Camera setDofFlag(boolean myDofFlag) 
+	/**
+	 * Sets the distance to the focal plane for the camera.
+	 * @param myFocalPlaneDis the distance to the focal plane
+	 * @return the camera object with the updated focal plane distance and focal plane defined
+	 */
+	public Camera setFocalPlaneDis(double myFocalPlaneDis)
 	{
-		dofFlag = myDofFlag;
-		return this;
-	}
-
-	public Plane getFocalPlane() 
-	{
-		return focalPlane;
-	}
-
-
-	public double getFocalPlaneDis() 
-	{
-		return focalPlaneDis;
-	}
-
-	public Camera setFocalPlaneDis(double myFocalPlaneDis) 
-	{
-		focalPlaneDis = myFocalPlaneDis;
-		focalPlane = new Plane(this.locationPoint.add(this.v_to.scale(focalPlaneDis)),this.v_to);
-		return this;
-	}
-
-	public Point[] getAperturePoints() 
-	{
-		return aperturePoints;
+	    focalPlaneDis = myFocalPlaneDis;
+	    focalPlane = new Plane(this.locationPoint.add(this.v_to.scale(focalPlaneDis)), this.v_to);
+	    return this;
 	}
 
 
-	public double getApertureSize() 
+	/**
+	 * Sets the size of the camera aperture.
+	 * @param myApertureSize the size of the camera aperture
+	 * @return the camera object with the updated aperture size and aperture points initialized
+	 */
+	public Camera setApertureSize(double myApertureSize)
 	{
-		return apertureSize;
+	    apertureSize = myApertureSize;
+	    if (myApertureSize != 0) 
+	    {
+	        initializeAperturePoint();
+	    }
+	    return this;
 	}
 
-	public Camera setApertureSize(double myApertureSize) 
-	{
-		apertureSize = myApertureSize;
-		if (myApertureSize != 0)
-		{
-			initializeAperturePoint();
-		}
-		return this;
-	}
 
-	public int getNumOfPoints() 
-	{
-		return numOfPoints;
-	}
-
+	/**
+	 * Sets the number of points on the aperture plane for depth of field.
+	 * @param myNumOfPoints the number of points on the aperture plane
+	 * @return the camera object with the updated number of points
+	 */
 	public Camera setNumOfPoints(int myNumOfPoints) 
 	{
-		numOfPoints = myNumOfPoints;
-		return this;
+	    numOfPoints = myNumOfPoints;
+	    return this;
 	}
+
 
 }
