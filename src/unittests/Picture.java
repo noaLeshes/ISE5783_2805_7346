@@ -27,7 +27,8 @@ public class Picture
 		 Material spMaterial2 = new Material().setkD(0.0).setkS(0.0).setnShininess(2000).setkT(0);
 		 Material spMaterial3 = new Material().setkT(0.1).setnShininess(1000);
 		 Material trMaterial1 = new Material().setkD(0.0).setkS(0.0).setnShininess(1000).setkT(0);
-		
+		 Material spMaterial5 = new Material().setkD(0.0).setkS(0.0).setnShininess(1000).setkT(0.0).setkR(0);
+
 		 scene.geometries.add(
 				 
 				//eyes
@@ -115,16 +116,18 @@ public class Picture
 		 					scene.geometries.add(new Sphere(3d, new Point(i, -62.5, -50)).setEmission(Color.YELLOW).setMaterial(spMaterial));
 		 				}
 		 		}
-		 		//wallpaper
-		 		for(int j = -140; j <= 250; j+=15)
-		 		{
-		 		for(int i = -250; i <= 250; i+=15)
-			 		
-			 		{
-			 			scene.geometries.add(new Sphere(5d, new Point(i, j, -500)).setEmission(Color.CYAN).setMaterial(spMaterial));
-			 		}
-		 		}
+//		 		//wallpaper
+//		 		for(int j = -140; j <= 250; j+=30)
+//		 		{
+//		 		for(int i = -250; i <= 250; i+=30)
+//			 		
+//			 		{
+//			 			scene.geometries.add(new Sphere(10d, new Point(i, j, -1700)).setEmission(Color.CYAN).setMaterial(spMaterial5));
+//			 		}
+//		 		}
 
+
+	 			scene.geometries.add(new Sphere(200d, new Point(500, 500, -10000)).setEmission(Color.CYAN).setMaterial(spMaterial5));
 
 		 scene.lights.add(new SpotLight(Color.WHITE, new Point(-250, 400, 1500), new Vector(-40,-1, -2)) 
 		         .setkL(0.000000004).setkQ(0.000000006));
@@ -155,7 +158,8 @@ public class Picture
 		 Material spMaterial2 = new Material().setkD(0.0).setkS(0.0).setnShininess(2000).setkT(0);
 		 Material spMaterial3 = new Material().setkT(0.1).setnShininess(1000);
 		 Material trMaterial1 = new Material().setkD(0.0).setkS(0.0).setnShininess(1000).setkT(0);
-		
+		 Material spMaterial5 = new Material().setkD(0.0).setkS(0.0).setnShininess(1000).setkT(0.0).setkR(0);
+
 		 scene.geometries.add(
 				 
 				//eyes
@@ -243,14 +247,16 @@ public class Picture
 		 				}
 		 		}
 		//wallpaper
-		 	for(int j = -140; j <= 250; j+=15)
-		 		{
-		 		for(int i = -250; i <= 250; i+=15)
-			 		
-			 		{
-			 			scene.geometries.add(new Sphere(5d, new Point(i, j, -500)).setEmission(Color.CYAN).setMaterial(spMaterial));
-			 		}
-		 		}
+//		 		for(int j = -140; j <= 250; j+=60)
+//		 		{
+//		 		for(int i = -250; i <= 250; i+=60)
+//			 		
+//			 		{
+//			 			scene.geometries.add(new Sphere(40d, new Point(i, j, -1700)).setEmission(Color.CYAN).setMaterial(spMaterial5));
+//			 		}
+//		 		}
+		 		
+	 			scene.geometries.add(new Sphere(200d, new Point(500, 500, -10000)).setEmission(Color.CYAN).setMaterial(spMaterial5));
 
 
 
@@ -260,7 +266,7 @@ public class Picture
 
 			
 		
-		 camera.setImageWriter(new ImageWriter("PictureD", 150, 150)) 
+		 camera.setImageWriter(new ImageWriter("PictureD", 500, 500)) 
          .setRayTracerBase(new RayTracerBasic(scene)) 
          .renderImage() 
          .writeToImage();
