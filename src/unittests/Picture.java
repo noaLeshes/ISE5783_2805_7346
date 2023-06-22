@@ -151,7 +151,8 @@ public class Picture
 
 		 Camera camera = new Camera(new Point(0,0,1700), new Vector(0, 0, -1), new Vector(0, 1, 0))  
 		         .setVPSize(150, 150).setVPDistance(1000)
-		         .setDepthOfFieldFlag(true).setNumOfPoints(100).setApertureSize(1).setFocalPlaneDis(1800);
+		         .setDepthOfFieldFlag(true).setNumOfPoints(100).setApertureSize(1).setFocalPlaneDis(1800)
+		         .setAntiAliasing(false).setGridSize(4);
 		 
 		 Material spMaterial = new Material().setkD(0.6).setkS(0.9).setnShininess(3000).setkT(0.0).setkR(0.0);
 		 Material spMaterial1 = new Material().setkD(0.0).setkS(0.0).setnShininess(1000).setkT(0);

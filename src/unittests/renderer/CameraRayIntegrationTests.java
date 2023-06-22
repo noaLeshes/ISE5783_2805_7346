@@ -30,9 +30,9 @@ class CameraRaysIntegrationTests
 	private List<Ray> Creat9RaysToVeiwPlane(Camera camera , int size)
 	{
 		List<Ray> raysFromCamera = new ArrayList<Ray>();
-		for (int i = 0; i < size; i++)
+		for (float i = 0; i < size; i++)
 		{
-			for (int j = 0; j < size; j++)
+			for (float j = 0; j < size; j++)
 			{
 				// Construct a ray from the camera's position to the point on the view plane
 				// with coordinates (j, i) and add it to the list of rays.
