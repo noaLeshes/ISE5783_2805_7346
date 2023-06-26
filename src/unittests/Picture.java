@@ -258,6 +258,7 @@ public class Picture
 //		 		}
 		 		
 	 			scene.geometries.add(new Sphere(200d, new Point(500, 500, -10000)).setEmission(Color.CYAN).setMaterial(spMaterial5));
+	 			scene.geometries.add(new Sphere(10d, new Point(0, 0, -100)).setEmission(Color.CYAN).setMaterial(spMaterial5));
 
 
 
@@ -265,11 +266,15 @@ public class Picture
 		         .setkL(0.000000004).setkQ(0.000000006));
 		scene.lights.add(new DirectionalLight( new Color(150,150,50), new Vector(-50, -1, -1))); //purplish 
 
-			
+//		scene.setBVH();
+
 		
 		 camera.setImageWriter(new ImageWriter("PictureD", 500, 500)) 
-         .setRayTracerBase(new RayTracerBasic(scene)) 
-         .renderImage() 
+         .setRayTracerBase(new RayTracerBasic(scene))
+//         .setMultiThreading(0)
+//         .setDebugPrint(0.2)
+//         .renderImageThreaded()
+         .renderImage()
          .writeToImage();
 		 
 		 

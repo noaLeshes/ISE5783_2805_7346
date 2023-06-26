@@ -4,8 +4,12 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 import static primitives.Util.isZero;
+import renderer.PixelManager.Pixel;
+
 
 import java.util.MissingResourceException;
+import java.util.LinkedList;
+import java.util.List;
 
 import geometries.Plane;
 
@@ -25,6 +29,12 @@ public class Camera
 //	}
 	
 	
+		//multithreading
+		private int numOfThreads = 1;
+		private double debugPrint = 0;
+		PixelManager p;
+		
+		
 		
 //	{ 			depth of field parameters
 		/**
@@ -572,6 +582,161 @@ public class Camera
 	    }
 	    
 //      {
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    public Camera setMultiThreading(int threads)
+	    {
+	    	if(threads < 0)
+	    	{
+	    		throw new IllegalArgumentException("Multithreading parameter must be 0 or higher");
+	    	}
+	    	if(threads != 0)
+	    	{
+	    		numOfThreads = threads;
+	    	}
+	    	else
+	    	{
+	    		int cores = Runtime.getRuntime().availableProcessors();
+	    		numOfThreads = cores < 2 ? 1 : cores;
+			}
+	    	return this;
+	    }
+	    
+	    
+	    public Camera setDebugPrint(double d)
+	    {
+	    	debugPrint = d;
+	    	return this;
+	    }
+	    
+	    
+	    
+	    /**
+		 * build for each pixel a ray and get it's color
+		 *
+		 * @return this camera
+		 */
+		public Camera renderImageThreaded()
+		{
+			final int nX = imageWriter.getNx();
+			final int nY = imageWriter.getNy();
+			p = new PixelManager(nY, nX, debugPrint);
+			if(numOfThreads == 0)
+			{
+				renderImage();
+			}
+			else 
+			{
+				if(antiAliasing)
+				{
+					while(numOfThreads-- > 0)
+					{
+						new Thread(()->
+						{
+							Pixel pixel; // current pixel(row,col)
+							// allocate pixel(row,col) in loop until there are no more pixels
+							while ((pixel = p.nextPixel()) != null)
+							{
+								// cast ray through pixel (and color it ג€“ inside castRay)
+								Color c = fragmentPixelToGrid(pixel.row(),pixel.col());	
+								imageWriter.writePixel(pixel.col(), pixel.row(), c);
+								p.pixelDone();
+							}
+						}).start();
+					}
+				}
+				else 
+				{
+					while(numOfThreads-- > 0)
+					{
+						new Thread(()->
+						{
+							Pixel pixel; // current pixel(row,col)
+							// allocate pixel(row,col) in loop until there are no more pixels
+							while ((pixel = p.nextPixel()) != null)
+							{
+								// cast ray through pixel (and color it ג€“ inside castRay)
+								Color c = castRay(nX, nY, pixel.col(), pixel.row());	
+								imageWriter.writePixel(pixel.col(), pixel.row(), c);
+								p.pixelDone();
+							}
+						}).start();
+					}
+				}
+			}
+			
+			return this;
+		}
+			
+//			if (locationPoint == null || v_right == null || v_up == null || v_to == null || imageWriter == null
+//					|| rayTracerBase == null)
+//				throw new MissingResourceException("missing filed in camera", "", "");
+//			int nx = imageWriter.getNx();
+//			int ny = imageWriter.getNy();
+//			p = new PixelManager(ny, nx, debugPrint);
+//			if (numOfThreads == 0)
+//			{
+//				renderImage();
+//			}
+//				
+//			else 
+//			{
+//				var threads = new LinkedList<Thread>(); // list of threads
+//				if(antiAliasing)
+//				{
+//					while (numOfThreads-- > 0) // add appropriate number of threads
+//					{
+//						threads.add(new Thread(() -> 
+//						{ // add a thread with its code
+//							Pixel pixel; // current pixel(row,col)
+//							// allocate pixel(row,col) in loop until there are no more pixels
+//							while ((pixel = p.nextPixel()) != null)
+//							{
+//								// cast ray through pixel (and color it ג€“ inside castRay)
+//								fragmentPixelToGrid(pixel.row(),pixel.col());	
+//								p.pixelDone();
+//								}
+//						}));
+//					}
+//				}
+//				else 
+//				{
+//					while (numOfThreads-- > 0) // add appropriate number of threads
+//					{
+//						threads.add(new Thread(() -> 
+//						{ // add a thread with its code
+//							Pixel pixel; // current pixel(row,col)
+//							// allocate pixel(row,col) in loop until there are no more pixels
+//							while ((pixel = p.nextPixel()) != null)
+//							{
+//								// cast ray through pixel (and color it ג€“ inside castRay)
+//								castRay(nx, ny, pixel.col(), pixel.row());
+//								p.pixelDone();
+//							}
+//						}));
+//					}
+//				}
+//				
+//				// start all the threads
+//				for (var thread : threads)
+//					thread.start();
+//				// wait until all the threads have finished
+//				try {
+//					for (var thread : threads)
+//						thread.join();
+//				} catch (InterruptedException ignore) {
+//				}
+//			}
+//			return this;
+		
+		
+		
+		
 
 
 }

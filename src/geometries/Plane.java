@@ -73,7 +73,7 @@ public class Plane extends Geometry
 	 * @param ray - the ray that intersects with the plane
 	 */
 	@Override
-	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray)
+	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance)
 	{
 		double nv = normal.dotProduct(ray.getDir());
 		
