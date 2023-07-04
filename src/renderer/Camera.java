@@ -29,11 +29,11 @@ public class Camera
 //	}
 	
 	
-		//multithreading
+//  {       multithreading parameters
 		private int numOfThreads = 1;
 		private double debugPrint = 0;
 		PixelManager p;
-		
+//  }		
 		
 		
 //	{ 			depth of field parameters
@@ -243,23 +243,40 @@ public class Camera
 //		 }
 				
 //		{ 					 AntiAliasing 		
-				
+				/**
+				 * Checks if anti-aliasing is enabled for the camera.
+				 * @return {@code true} if anti-aliasing is enabled, {@code false} otherwise
+				 */
 				 public boolean isAntiAliasing() 
 				 {
 					 return antiAliasing;
 				 }
 				
+				 /**
+				  * Retrieves the grid size of the camera.
+				  * @return the grid size
+				  */
 				 public int getGridSize() 
 				 {
 					 return gridSize;
 				 }
 				 
+				 /**
+				   * Sets the antialiasing flag for the camera.
+				 * @param antiAliasing the value indicating whether depth of field is enabled
+				 * @return the camera object with the updated antiAliasing flag
+				 */
 				 public Camera setAntiAliasing(boolean antiAliasing) 
 				 {
 					 this.antiAliasing = antiAliasing;
 				     return this;
 				 }
 				 
+				 /**
+					 * Sets the size of the grid.
+					 * @param gridSize the size of the camera's grid
+					 * @return the camera object with the updated grid size
+					 */
 				 public Camera setGridSize(int gridSize) 
 				 {
 				        this.gridSize = gridSize;
@@ -289,7 +306,6 @@ public class Camera
 			this.v_up = v_up.normalize();
 			v_right = (v_to.crossProduct(v_up)).normalize();// calculating v_right
 			this.locationPoint = locationPoint;	
-	        //this.apertureSize = 0; //initialize DoF parameters.
 	
 		}
 	
@@ -433,6 +449,10 @@ public class Camera
 					{
 						pixelColor = fragmentPixelToGrid(i,j);
 					}
+					if(depthOfFieldFlag)
+					{
+						pixelColor = castRay(nX, nY, j, i);
+					}
 					else 
 					{
 						pixelColor = castRay(nX, nY, j, i);
@@ -538,15 +558,12 @@ public class Camera
 		    int numOfPoints = this.aperturePoints.length;
 		    Ray apertureRay;
 		    Point focalPoint = this.focalPlane.findGeoIntersections(ray).get(0).point;
-	
 		    // Iterate over each aperture point and calculate the color
 		    for (Point aperturePoint : this.aperturePoints) {
 		        // Create a ray from the aperture point towards the focal point
 		        apertureRay = new Ray(aperturePoint, focalPoint.subtract(aperturePoint));
-	
 		        // Trace the ray and get the color using the configured RayTracerBase object
 		        Color apertureColor = rayTracerBase.traceRay(apertureRay);
-	
 		        // Add the color to the average color, reduced by the number of points
 		        averageColor = averageColor.add(apertureColor.reduce(numOfPoints));
 		    }
@@ -562,25 +579,29 @@ public class Camera
 		 /**
 	     * It takes a pixel and divides it into a grid of smaller pixels, and then casts a ray through each of the smaller
 	     * pixels and averages the color of the smaller pixels to get the color of the original pixel
-	     *
 	     * @param i the x coordinate of the pixel
 	     * @param j the x coordinate of the pixel
 	     * @return The color of the pixel.
 	     */
-	    private Color fragmentPixelToGrid(int i, int j) 
-	    {
-	    	int nX = imageWriter.getNx();
-	        int nY = imageWriter.getNy();
-	        double grid = 1.0 / this.gridSize;
-	        Color pixelColor = Color.BLACK;
-	
-	        for (float fragmentI = i; fragmentI < i + 1.0f; fragmentI += grid)
-	            for (float fragmentJ = j; fragmentJ < j + 1.0f; fragmentJ += grid)
-	                pixelColor = pixelColor.add(this.castRay(nX, nY, fragmentJ, fragmentI));
-	
-	        return pixelColor.reduce(this.gridSize*this.gridSize);
-	    }
-	    
+		private Color fragmentPixelToGrid(int i, int j) 
+		{
+		    // Get the dimensions of the image
+		    int nX = imageWriter.getNx();
+		    int nY = imageWriter.getNy();
+		    // Calculate the size of each grid cell
+		    double grid = 1.0 / this.gridSize;
+		    // Initialize the color of the pixel
+		    Color pixelColor = Color.BLACK;
+		    // Iterate over each fragment within the pixel
+		    for (float fragmentI = i; fragmentI < i + 1.0f; fragmentI += grid) {
+		        for (float fragmentJ = j; fragmentJ < j + 1.0f; fragmentJ += grid) {
+		            // Calculate the color based on the cast rays
+		            pixelColor = pixelColor.add(this.castRay(nX, nY, fragmentJ, fragmentI));
+		        }
+		    }
+		    // Reduce the color by averaging it over the number of fragments
+		    return pixelColor.reduce(this.gridSize * this.gridSize);
+		}
 //      {
 	    
 	    
@@ -615,128 +636,53 @@ public class Camera
 	    }
 	    
 	    
-	    
-	    /**
-		 * build for each pixel a ray and get it's color
-		 *
-		 * @return this camera
-		 */
-		public Camera renderImageThreaded()
-		{
-			final int nX = imageWriter.getNx();
-			final int nY = imageWriter.getNy();
-			p = new PixelManager(nY, nX, debugPrint);
-			if(numOfThreads == 0)
-			{
-				renderImage();
-			}
-			else 
-			{
-				if(antiAliasing)
-				{
-					while(numOfThreads-- > 0)
-					{
-						new Thread(()->
-						{
-							Pixel pixel; // current pixel(row,col)
-							// allocate pixel(row,col) in loop until there are no more pixels
-							while ((pixel = p.nextPixel()) != null)
-							{
-								// cast ray through pixel (and color it ג€“ inside castRay)
-								Color c = fragmentPixelToGrid(pixel.row(),pixel.col());	
-								imageWriter.writePixel(pixel.col(), pixel.row(), c);
-								p.pixelDone();
-							}
-						}).start();
-					}
-				}
-				else 
-				{
-					while(numOfThreads-- > 0)
-					{
-						new Thread(()->
-						{
-							Pixel pixel; // current pixel(row,col)
-							// allocate pixel(row,col) in loop until there are no more pixels
-							while ((pixel = p.nextPixel()) != null)
-							{
-								// cast ray through pixel (and color it ג€“ inside castRay)
-								Color c = castRay(nX, nY, pixel.col(), pixel.row());	
-								imageWriter.writePixel(pixel.col(), pixel.row(), c);
-								p.pixelDone();
-							}
-						}).start();
-					}
-				}
-			}
-			
-			return this;
-		}
-			
-//			if (locationPoint == null || v_right == null || v_up == null || v_to == null || imageWriter == null
-//					|| rayTracerBase == null)
-//				throw new MissingResourceException("missing filed in camera", "", "");
-//			int nx = imageWriter.getNx();
-//			int ny = imageWriter.getNy();
-//			p = new PixelManager(ny, nx, debugPrint);
-//			if (numOfThreads == 0)
-//			{
-//				renderImage();
-//			}
-//				
-//			else 
-//			{
-//				var threads = new LinkedList<Thread>(); // list of threads
-//				if(antiAliasing)
-//				{
-//					while (numOfThreads-- > 0) // add appropriate number of threads
-//					{
-//						threads.add(new Thread(() -> 
-//						{ // add a thread with its code
-//							Pixel pixel; // current pixel(row,col)
-//							// allocate pixel(row,col) in loop until there are no more pixels
-//							while ((pixel = p.nextPixel()) != null)
-//							{
-//								// cast ray through pixel (and color it ג€“ inside castRay)
-//								fragmentPixelToGrid(pixel.row(),pixel.col());	
-//								p.pixelDone();
-//								}
-//						}));
-//					}
-//				}
-//				else 
-//				{
-//					while (numOfThreads-- > 0) // add appropriate number of threads
-//					{
-//						threads.add(new Thread(() -> 
-//						{ // add a thread with its code
-//							Pixel pixel; // current pixel(row,col)
-//							// allocate pixel(row,col) in loop until there are no more pixels
-//							while ((pixel = p.nextPixel()) != null)
-//							{
-//								// cast ray through pixel (and color it ג€“ inside castRay)
-//								castRay(nx, ny, pixel.col(), pixel.row());
-//								p.pixelDone();
-//							}
-//						}));
-//					}
-//				}
-//				
-//				// start all the threads
-//				for (var thread : threads)
-//					thread.start();
-//				// wait until all the threads have finished
-//				try {
-//					for (var thread : threads)
-//						thread.join();
-//				} catch (InterruptedException ignore) {
-//				}
-//			}
-//			return this;
-		
-		
-		
-		
+	    public Camera renderImageThreaded() 
+	    {
+ 
+	    int ny = imageWriter.getNy();
+		int nx = imageWriter.getNx();
 
+		PixelManager pixelManager = new PixelManager(ny, nx, debugPrint);
+
+		List<Thread> threads = new LinkedList<>();
+
+		if (!antiAliasing) {
+			while (numOfThreads-- > 0) {
+				Thread thread = new Thread(() -> {
+					PixelManager.Pixel pixel;
+					while ((pixel = pixelManager.nextPixel()) != null) {
+						Color color = this.castRay(nx, ny, pixel.col(), pixel.row());
+						imageWriter.writePixel(pixel.col(), pixel.row(), color);
+						pixelManager.pixelDone();
+					}
+				});
+				threads.add(thread);
+				thread.start();
+			}
+		} else {
+			while (numOfThreads-- > 0) {
+				Thread thread = new Thread(() -> {
+					PixelManager.Pixel pixel;
+					while ((pixel = pixelManager.nextPixel()) != null) {
+						Color color = this.fragmentPixelToGrid(pixel.row(), pixel.col());
+						imageWriter.writePixel(pixel.col(), pixel.row(), color);
+						pixelManager.pixelDone();
+					}
+				});
+				threads.add(thread);
+				thread.start();
+			}
+		}
+		// Wait for all threads to complete
+		for (Thread thread : threads) {
+			try {
+				thread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		return this;
+
+	}
 
 }

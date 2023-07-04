@@ -117,7 +117,10 @@ public class Geometries extends Intersectable
 
 				}
 				// Add all the intersection points to the temporary list
-				temp.addAll(lPoints); 
+				else
+				{
+					temp.addAll(lPoints); 
+				}
 			}
 		}
 	   for ( Intersectable intersectable : i) 
