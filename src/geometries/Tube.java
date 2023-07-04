@@ -63,7 +63,7 @@ public class Tube extends RadialGeometry
    	   * @param ray - the ray that intersects with the Cylinder
   	   */
 	    @Override
-	    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance)
+	    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray)
 		{
 		   return null;
 		}

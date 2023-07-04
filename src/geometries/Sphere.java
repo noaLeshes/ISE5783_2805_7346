@@ -23,15 +23,6 @@ public class Sphere extends RadialGeometry
 	{
 		super(radius1);
 		this.center = p;
-		if (cbr) {
-			double minX = center.getX() - radius;
-			double maxX = center.getX() + radius;
-			double minY = center.getY() - radius;
-			double maxY = center.getY() + radius;
-			double minZ = center.getZ() - radius;
-			double maxZ = center.getZ() + radius;
-			this.box= new Border(minX, minY, minZ, maxX, maxY, maxZ);
-		}
 	}
 
 	/**	  
@@ -66,7 +57,7 @@ public class Sphere extends RadialGeometry
 	 * @param ray - the ray that intersects with the sphere
 	 */
 	@Override
-	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance)
+	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray)
 	{
 		if (ray.getP0().equals(center)) // if the start point of the ray in the center, the point, is on the radius
 		{

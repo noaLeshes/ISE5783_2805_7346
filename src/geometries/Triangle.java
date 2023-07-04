@@ -29,7 +29,7 @@ public class Triangle extends Polygon
 	 * @param ray - the ray that intersects with the triangle
 	 */
 	@Override
-	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance)
+	protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray)
 	{
 		
 		List<GeoPoint> rayPoints = plane.findGeoIntersections(ray);

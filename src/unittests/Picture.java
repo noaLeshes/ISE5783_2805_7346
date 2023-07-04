@@ -152,7 +152,7 @@ public class Picture
 
 		 Camera camera = new Camera(new Point(0,0,1700), new Vector(0, 0, -1), new Vector(0, 1, 0))  
 		         .setVPSize(150, 150).setVPDistance(1000)
-		         .setDepthOfFieldFlag(true).setNumOfPoints(100).setApertureSize(1).setFocalPlaneDis(-40000)
+		         .setDepthOfFieldFlag(true).setNumOfPoints(100).setApertureSize(1).setFocalPlaneDis(1800)
 		         .setAntiAliasing(false).setGridSize(4);
 		 
 		 Material spMaterial = new Material().setkD(0.6).setkS(0.9).setnShininess(3000).setkT(0.0).setkR(0.0);
@@ -259,7 +259,6 @@ public class Picture
 		         .setkL(0.000000004).setkQ(0.000000006));
 		scene.lights.add(new DirectionalLight( new Color(150,150,50), new Vector(-50, -1, -1))); //purplish 
 
-		scene.setBVH();
 
 		
 		 camera.setImageWriter(new ImageWriter("PictureD", 500, 500)) 
@@ -400,7 +399,7 @@ public class Picture
 		         .setkL(0.000000004).setkQ(0.000000006));
 		scene.lights.add(new DirectionalLight( new Color(150,150,50), new Vector(-50, -1, -1))); //purplish 
 
-		scene.setBVH();
+
 
 		
 		 camera.setImageWriter(new ImageWriter("PictureD1", 500, 500)) 
