@@ -23,6 +23,8 @@ public class Sphere extends RadialGeometry
 	{
 		super(radius1);
 		this.center = p;
+		
+	    // if cbr is true create the box for the sphere 
 		if (cbr) {
 			double minX = center.getX() - radius;
 			double maxX = center.getX() + radius;

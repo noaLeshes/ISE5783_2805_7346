@@ -44,13 +44,14 @@ public class Polygon extends Geometry {
       if (vertices.length < 3)
          throw new IllegalArgumentException("A polygon can't have less than 3 vertices");
       this.vertices = List.of(vertices);
-      size          = vertices.length;
+      size = vertices.length;
 
       // Generate the plane according to the first three vertices and associate the
       // polygon with this plane.
       // The plane holds the invariant normal (orthogonal unit) vector to the polygon
-      plane         = new Plane(vertices[0], vertices[1], vertices[2]);
+      plane = new Plane(vertices[0], vertices[1], vertices[2]);
       
+      // if cbr is true create the box for the polygon 
       if (cbr) 
       {
 			box = new Border();

@@ -136,89 +136,118 @@ public class Geometries extends Intersectable
 		return temp;	
 	}
 	
-	
-	public void setBVH() 
-	{
-		if (!cbr)
-			return;
-		// min amount of geometries in a box is 2
-		if (l.size() <= 4)
-			return;
-
-		if (box == null) {
-			var finites = new Geometries(l);
-			l.clear();
-			l.add(finites);
-			return;
-		}
-
+	/**
+	 * create the hierarchy and put into the right boxes
+	 */
+	public void setBVH() {
 		double x = box.maxX - box.minX;
 		double y = box.maxY - box.minY;
 		double z = box.maxZ - box.minZ;
 		// which axis we are reffering to
-		final char axis = y > x && y > z ? 'y' : z > x && z > y ? 'z' : 'x';
-//		Collections.sort(geometries, //
-//				(i1, i2) -> Double.compare(average(i1, axis), average(i2, axis)));
-
-		var s = new Geometries();
-		var m = new Geometries();
-		var r = new Geometries();
-		double midX = (box.maxX + box.minX) / 2;
-		double midY = (box.maxY + box.minY) / 2;
-		double midZ = (box.maxZ + box.minZ) / 2;
-		switch (axis) {
-		case 'x':
-			for (var g : l) {
-				if (g.box.minX > midX)
-					r.add(g);
-				else if (g.box.maxX < midX)
-					s.add(g);
-				else
-					m.add(g);
-			}
-			break;
-		case 'y':
-			for (var g : l) {
-				if (g.box.minY > midY)
-					r.add(g);
-				else if (g.box.maxY < midY)
-					s.add(g);
-				else
-					m.add(g);
-			}
-			break;
-		case 'z':
-			for (var g : l) {
-				if (g.box.minZ > midZ)
-					r.add(g);
-				else if (g.box.maxZ < midZ)
-					s.add(g);
-				else
-					m.add(g);
-			}
-			break;
-		}
-
-
-
-		l.clear();
-		if (s.l.size() <= 2)
-			l.addAll(s.l);
-		else {
-			s.setBVH();
-			l.add(s);
-		}
-
-		if (m.l.size() <= 2)
-			l.addAll(m.l);
-		else
-			l.add(m);
-		
-		if (r.l.size() <= 2)
-			l.addAll(r.l);
-		else {
-			r.setBVH();
-			l.add(r);
-		}
+		setBVH(y > x && y > z ? 1 : z > x && z > y ? 2 : 0, 3);
 	}
+
+	private void setBVH(int axis, int count) {
+	    // If `cbr` is false or there are no geometries to process, return.
+	    if (!cbr || count == 0)
+	        return;
+
+	    // If the number of geometries in `l` is greater than 4.
+	    if (l.size() > 4) 
+	    {
+
+	        // Create three `Geometries` objects to hold the split groups of geometries, dividing the current bounding box into 3 different sub-boxes
+	        var s = new Geometries(); // left geometries
+	        var m = new Geometries(); // middle geometries
+	        var r = new Geometries(); // right geometries
+
+	        // Calculate the midpoint coordinates of the current bounding box (`box`).
+	        double midX = (box.maxX + box.minX) / 2;
+	        double midY = (box.maxY + box.minY) / 2;
+	        double midZ = (box.maxZ + box.minZ) / 2;
+
+	        // Split the geometries in `l` into `s`, `m`, and `r` based on the current splitting axis.
+	        // The splitting is done by comparing the minimum and maximum coordinates of each geometry
+	        // with the midpoint coordinates of the bounding box (`box`).
+	        switch (axis) {
+	            case 0: // Split along the X-axis
+	                for (var g : l) {
+	                    if (g.box.minX > midX)
+	                        r.add(g); // Geometry is on the right side of the midpoint
+	                    else if (g.box.maxX < midX)
+	                        s.add(g); // Geometry is on the left side of the midpoint
+	                    else
+	                        m.add(g); // Geometry intersects the midpoint
+	                }
+	                break;
+	            case 1: // Split along the Y-axis
+	                for (var g : l) {
+	                    if (g.box.minY > midY)
+	                        r.add(g); // Geometry is above the midpoint
+	                    else if (g.box.maxY < midY)
+	                        s.add(g); // Geometry is below the midpoint
+	                    else
+	                        m.add(g); // Geometry intersects the midpoint
+	                }
+	                break;
+	            case 2: // Split along the Z-axis
+	                for (var g : l) {
+	                    if (g.box.minZ > midZ)
+	                        r.add(g); // Geometry is in front of the midpoint
+	                    else if (g.box.maxZ < midZ)
+	                        s.add(g); // Geometry is behind the midpoint
+	                    else
+	                        m.add(g); // Geometry intersects the midpoint
+	                }
+	                break;
+	        }
+
+	        // Calculate the sizes of the split groups.
+	        int nextAxis = (axis + 1) % 3;
+	        int lsize = s.l.size();
+	        int msize = m.l.size();
+	        int rsize = r.l.size();
+
+	        // Clear the current list `l`.
+	        l.clear();
+
+	        // If the size of the `s` group is small or the sum of sizes of `m` and `r` is zero,
+	        // add the small-sized geometries (`s`) to `l`.
+	        // If the sum of sizes of `m` and `r` is also zero, recursively call `setBVH` with the next axis.
+	        // This ensures further splitting along different axes.
+	        if (lsize <= 2 || msize + rsize == 0) {
+	            this.add(s.l);
+	            if (msize + rsize == 0)
+	                this.setBVH(nextAxis, count - 1);
+	        } else {
+	            l.add(s);
+	        }
+
+	        // Similar logic is applied for the `m` group.
+	        if (msize <= 2 || lsize + rsize == 0) {
+	            this.add(m.l);
+	            if (lsize + rsize == 0)
+	                this.setBVH(nextAxis, count - 1);
+	        } else {
+	            l.add(m);
+	        }
+
+	        // Similar logic is applied for the `r` group.
+	        if (rsize <= 2 || lsize + msize == 0) {
+	            this.add(r.l);
+	            if (lsize + msize == 0)
+	                this.setBVH(nextAxis, count - 1);
+	        } else {
+	            l.add(r);
+	        }
+	    }
+
+	    // Recursively call `setBVH` on any nested `Geometries` objects within `l`.
+	    for (var geo : this.l) {
+	        if (geo instanceof Geometries geos)
+	            geos.setBVH();
+	    }
+	    return;
+	}
+
 }

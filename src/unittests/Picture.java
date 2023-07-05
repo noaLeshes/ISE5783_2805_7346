@@ -2,6 +2,7 @@ package unittests;
 
 
 
+
 import org.junit.jupiter.api.Test;
 
 import geometries.Sphere;
@@ -18,7 +19,7 @@ public class Picture
 	public void PictureTest() 
 	{
 		Scene scene = new Scene("Picture")
-				.setBackgroundColor(Color.RED);
+				.setBackgroundColor(Color.RED).setCBR();
 
 		 Camera camera = new Camera(new Point(0,0,1700), new Vector(0, 0, -1), new Vector(0, 1, 0))  
 		         .setVPSize(150, 150).setVPDistance(1000); 
@@ -116,15 +117,7 @@ public class Picture
 		 					scene.geometries.add(new Sphere(3d, new Point(i, -62.5, -50)).setEmission(Color.YELLOW).setMaterial(spMaterial));
 		 				}
 		 		}
-//		 		//wallpaper
-//		 		for(int j = -140; j <= 250; j+=30)
-//		 		{
-//		 		for(int i = -250; i <= 250; i+=30)
-//			 		
-//			 		{
-//			 			scene.geometries.add(new Sphere(10d, new Point(i, j, -1700)).setEmission(Color.CYAN).setMaterial(spMaterial5));
-//			 		}
-//		 		}
+
 
 
 	 			scene.geometries.add(new Sphere(200d, new Point(500, 500, -10000)).setEmission(Color.CYAN).setMaterial(spMaterial5));
@@ -134,7 +127,7 @@ public class Picture
 		         .setkL(0.000000004).setkQ(0.000000006));
 		scene.lights.add(new DirectionalLight( new Color(150,150,50), new Vector(-50, -1, -1))); //purplish 
 
-			
+			scene.setBVH();
 		
 		 camera.setImageWriter(new ImageWriter("Picture", 500, 500)) 
          .setRayTracerBase(new RayTracerBasic(scene)) 
@@ -148,11 +141,12 @@ public class Picture
 	public void PictureDTest() 
 	{
 		Scene scene = new Scene("PictureD")
-				.setBackgroundColor(Color.RED);
+				.setBackgroundColor(Color.RED)
+				.setCBR();
 
 		 Camera camera = new Camera(new Point(0,0,1700), new Vector(0, 0, -1), new Vector(0, 1, 0))  
 		         .setVPSize(150, 150).setVPDistance(1000)
-		         .setDepthOfFieldFlag(true).setNumOfPoints(100).setApertureSize(1).setFocalPlaneDis(-40000)
+		         .setDepthOfFieldFlag(true).setNumOfPoints(100).setApertureSize(1).setFocalPlaneDis(1800)
 		         .setAntiAliasing(false).setGridSize(4);
 		 
 		 Material spMaterial = new Material().setkD(0.6).setkS(0.9).setnShininess(3000).setkT(0.0).setkR(0.0);
@@ -248,7 +242,6 @@ public class Picture
 		 					scene.geometries.add(new Sphere(3d, new Point(i, -62.5, -50)).setEmission(Color.YELLOW).setMaterial(spMaterial));
 		 				}
 		 		}
-		
 		 		
 	 			scene.geometries.add(new Sphere(200d, new Point(500, 500, -10000)).setEmission(Color.CYAN).setMaterial(spMaterial5));
 	 			scene.geometries.add(new Sphere(12d, new Point(-30, 30, 1000)).setEmission(Color.CYAN).setMaterial(spMaterial5));
@@ -281,7 +274,7 @@ public class Picture
 	public void PictureD1Test() 
 	{
 		Scene scene = new Scene("PictureD1")
-				.setBackgroundColor(Color.RED);
+				.setBackgroundColor(Color.RED).setCBR();
 
 		 Camera camera = new Camera(new Point(0,0,1700), new Vector(0, 0, -1), new Vector(0, 1, 0))  
 		         .setVPSize(150, 150).setVPDistance(1000)
@@ -381,16 +374,7 @@ public class Picture
 		 					scene.geometries.add(new Sphere(3d, new Point(i, -62.5, -50)).setEmission(Color.YELLOW).setMaterial(spMaterial));
 		 				}
 		 		}
-		//wallpaper
-//		 		for(int j = -140; j <= 250; j+=60)
-//		 		{
-//		 		for(int i = -250; i <= 250; i+=60)
-//			 		
-//			 		{
-//			 			scene.geometries.add(new Sphere(40d, new Point(i, j, -1700)).setEmission(Color.CYAN).setMaterial(spMaterial5));
-//			 		}
-//		 		}
-		 		
+
 	 			scene.geometries.add(new Sphere(200d, new Point(500, 500, -10000)).setEmission(Color.CYAN).setMaterial(spMaterial5));
 	 			scene.geometries.add(new Sphere(12d, new Point(-30, 30, 1000)).setEmission(Color.CYAN).setMaterial(spMaterial5));
 

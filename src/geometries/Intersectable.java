@@ -17,8 +17,6 @@ public abstract class Intersectable
 	
 	protected static boolean cbr = false;
 
-	public static long boxCheckCounter = 0;
-	public static long intersectionCounter = 0;
 	
 	/**
 	 * the box for the bvh
@@ -27,9 +25,6 @@ public abstract class Intersectable
 
 	/**
 	 * class Border is a class that represents the box of the bvh
-	 * 
-	 * @author Efrat Wexler and Sari Zilberlicht
-	 *
 	 */
 	public static class Border {
 		/**
@@ -75,91 +70,100 @@ public abstract class Intersectable
 		}
 		
 		/**
-		 * this function calculate if the ray trace the border of the geometry
-		 * 
-		 * @param ray the crosses ray
-		 * @return true for intersection, false for not intersection
+		 * This function calculates if the given ray intersects with the border of the geometry.
+		 * It performs intersection tests along the X, Y, and Z axes to determine the range of intersection.
+		 *
+		 * @param ray  The ray to check for intersection.
+		 * @param dis  The maximum distance for valid intersections.
+		 * @return True if the ray intersects with the border, false otherwise.
 		 */
 		protected boolean intersect(Ray ray, double dis) {
-			//++boxCheckCounter;
-			
-			Point origin = ray.getP0();
-			double originX = origin.getX();
-			double originY = origin.getY();
-			double originZ = origin.getZ();
-			Vector dir = ray.getDir();
-			double dirX = dir.getX();
-			double dirY = dir.getY();
-			double dirZ = dir.getZ();
+		    Point origin = ray.getP0();
+		    double originX = origin.getX();
+		    double originY = origin.getY();
+		    double originZ = origin.getZ();
+		    Vector dir = ray.getDir();
+		    double dirX = dir.getX();
+		    double dirY = dir.getY();
+		    double dirZ = dir.getZ();
 
-			// Initially will receive the values of tMinX and tMaxX
-			double tMin = Double.NEGATIVE_INFINITY;
-			double tMax = Double.POSITIVE_INFINITY;
+		    // Initially, set the values of tMin and tMax to negative and positive infinity, respectively,
+		    // representing the range of parameter t along the ray where intersections can occur.
 
-			// the values are depend on the direction of the ray
+		    double tMin = Double.NEGATIVE_INFINITY;
+		    double tMax = Double.POSITIVE_INFINITY;
 
-			if (dirX > 0) {
-				tMin = (minX - originX) / dirX; // b=D*t+O => y=mx+b =>dirx*tmin+originx=minx
-				tMax = (maxX - originX) / dirX;
-			} else if (dirX < 0) {
-				tMin = (maxX - originX) / dirX;
-				tMax = (minX - originX) / dirX;
-			}
+		    // Calculate the intersection range along the X axis based on the direction of the ray's X component.
 
-			double tMinY = Double.NEGATIVE_INFINITY;
-			double tMaxY = Double.POSITIVE_INFINITY;
-			if (dirY > 0) {
-				tMinY = (minY - originY) / dirY;
-				tMaxY = (maxY - originY) / dirY;
-			} else if (dirY < 0) {
-				tMinY = (maxY - originY) / dirY;
-				tMaxY = (minY - originY) / dirY;
-			}
+		    if (dirX > 0) {
+		        // If the ray's X component is positive, calculate tMin and tMax by dividing the difference between
+		        // the minimum X value of the border and the X value of the ray's origin by the ray's X component.
+		        // This corresponds to finding the value of t where the ray intersects the plane defined by the minimum X value.
+		        // The same calculation is performed for the maximum X value.
+		        tMin = (minX - originX) / dirX; // Intersection of ray with minX plane: minX = dirX * tMin + originX
+		        tMax = (maxX - originX) / dirX; // Intersection of ray with maxX plane: maxX = dirX * tMax + originX
+		    } else if (dirX < 0) {
+		        // If the ray's X component is negative, the calculation is reversed to find the intersections
+		        // with the maximum X value first and then the minimum X value.
+		        tMin = (maxX - originX) / dirX; // Intersection of ray with maxX plane: maxX = dirX * tMin + originX
+		        tMax = (minX - originX) / dirX; // Intersection of ray with minX plane: minX = dirX * tMax + originX
+		    }
 
-			// If either the max value of Y is smaller than overall min value, or min value
-			// of Y is bigger than the overall
-			// max, we can already return false.
-			// Otherwise we'll update the overall min and max values and perform the same
-			// check on the Z values.
-			if ((tMin > tMaxY) || (tMinY > tMax))
-				return false;
+		    // Calculate the intersection range along the Y axis based on the direction of the ray's Y component.
 
-			if (tMinY > tMin)
-				tMin = tMinY;
-			if (tMaxY < tMax)
-				tMax = tMaxY;
+		    double tMinY = Double.NEGATIVE_INFINITY;
+		    double tMaxY = Double.POSITIVE_INFINITY;
+		    if (dirY > 0) {
+		        // If the ray's Y component is positive, calculate tMinY and tMaxY similarly to tMin and tMax.
+		        tMinY = (minY - originY) / dirY; // Intersection of ray with minY plane: minY = dirY * tMinY + originY
+		        tMaxY = (maxY - originY) / dirY; // Intersection of ray with maxY plane: maxY = dirY * tMaxY + originY
+		    } else if (dirY < 0) {
+		        // If the ray's Y component is negative, calculate tMinY and tMaxY in reverse order.
+		        tMinY = (maxY - originY) / dirY; // Intersection of ray with maxY plane: maxY = dirY * tMinY + originY
+		        tMaxY = (minY - originY) / dirY; // Intersection of ray with minY plane: minY = dirY * tMaxY + originY
+		    }
 
-			double tMinZ = Double.NEGATIVE_INFINITY;
-			double tMaxZ = Double.POSITIVE_INFINITY;
-			if (dirZ > 0) {
-				tMinZ = (minZ - originZ) / dirZ;
-				tMaxZ = (maxZ - originZ) / dirZ;
-			} else if (dirZ < 0) {
-				tMinZ = (maxZ - originZ) / dirZ;
-				tMaxZ = (minZ - originZ) / dirZ;
-			}
+		    // If either the maximum Y value is smaller than the overall minimum value or the minimum Y value is bigger than the overall
+		    // maximum, there is no intersection. Return false.
+		    // Otherwise, update the overall tMin and tMax values based on the Y-axis intersection range.
 
-			// If either the max value of Z is smaller than overall min value, or min value
-			// of Z is bigger than the overall
-			// max, we can already return false. Otherwise we can return true since no other
-			// coordinate checks are needed.
-			return tMin <= tMaxZ && tMinZ <= tMax;
+		    if ((tMin > tMaxY) || (tMinY > tMax))
+		        return false;
+
+		    if (tMinY > tMin)
+		        tMin = tMinY;
+		    if (tMaxY < tMax)
+		        tMax = tMaxY;
+
+		    // Calculate the intersection range along the Z axis based on the direction of the ray's Z component.
+
+		    double tMinZ = Double.NEGATIVE_INFINITY;
+		    double tMaxZ = Double.POSITIVE_INFINITY;
+		    if (dirZ > 0) {
+		        // If the ray's Z component is positive, calculate tMinZ and tMaxZ similarly to tMin and tMax.
+		        tMinZ = (minZ - originZ) / dirZ; // Intersection of ray with minZ plane: minZ = dirZ * tMinZ + originZ
+		        tMaxZ = (maxZ - originZ) / dirZ; // Intersection of ray with maxZ plane: maxZ = dirZ * tMaxZ + originZ
+		    } else if (dirZ < 0) {
+		        // If the ray's Z component is negative, calculate tMinZ and tMaxZ in reverse order.
+		        tMinZ = (maxZ - originZ) / dirZ; // Intersection of ray with maxZ plane: maxZ = dirZ * tMinZ + originZ
+		        tMaxZ = (minZ - originZ) / dirZ; // Intersection of ray with minZ plane: minZ = dirZ * tMaxZ + originZ
+		    }
+
+		    // If either the maximum Z value is smaller than the overall minimum value or the minimum Z value is bigger than the overall
+		    // maximum, there is no intersection. Otherwise, return true to indicate an intersection.
+
+		    return tMin <= tMaxZ && tMinZ <= tMax;
 		}
-
 	}
 
-	public static void setCbr() {
+	/**
+	 * setter for Conservative Bounding Region flag
+	 */
+	public static void setCbr() 
+	{
 		Intersectable.cbr = true;
 	}
 
-
-	
-	
-	
-	
-	
-	
-	
 	
 	public static class GeoPoint 
 	{
